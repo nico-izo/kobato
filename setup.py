@@ -1,7 +1,4 @@
 from setuptools import setup
-from codecs import open
-from os import path
-from warnings import warn
 
 setup(name='kobato',
       version='0.1',
