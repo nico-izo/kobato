@@ -39,10 +39,12 @@ class KobatoPost(KobatoBasePlugin):
         
         if self._parsed_args['delete']:
             print("Deleting post {0}".format(self._parsed_args['delete']))
-            if 'yes' not in self._parsed_args:
+            if not self._parsed_args['yes']:
                 confirm = input("Are you sure? [y|N]")
                 if confirm.lower() == 'y':
                     self.delete(self._parsed_args['delete'])
+                else:
+                    print("Terminated.")
             else:
                 self.delete(self._parsed_args['delete'])
                 
@@ -101,6 +103,7 @@ class KobatoPost(KobatoBasePlugin):
             self.preview()
         
         if self._parsed_args['draft']:
+            print("\nFinal draft saved as {0}".format(out_draft))
             print("Draft-only mode, exiting...")
             sys.exit(0)
         

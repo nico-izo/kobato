@@ -1,7 +1,7 @@
 import argparse
 
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
-from kobato.config import Config, config_sync, config_flush
+from kobato.config import Config, config_sync, config_flush, is_logged_in
 
 from getpass import getpass
 from decorating import animated
@@ -17,6 +17,11 @@ class KobatoLogin(KobatoBasePlugin):
         self._parsed_args = vars(parser.parse_args(self._args))
         
         if not self._parsed_args['reset']:
+            if is_logged_in():
+                # TODO: whoami
+                print("You are already logged it. Use kobato login --whoami to remind yourself who you are")
+                return
+
             if not self._parsed_args['login']:
                 self.login(input('Username: '), getpass())
             else:
@@ -47,6 +52,7 @@ class KobatoLogin(KobatoBasePlugin):
             Config['login']['is_logged_in'] = '1'
             config_sync()
             print("Successful authorization. Config file updated")
+            print("Welcome, @{0}!".format(login))
     
     @animated('Bye-bye...')
     def reset(self):
