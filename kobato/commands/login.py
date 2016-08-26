@@ -19,7 +19,7 @@ class KobatoLogin(KobatoBasePlugin):
         if not self._parsed_args['reset']:
             if is_logged_in():
                 # TODO: whoami
-                print("You are already logged it. Use kobato login --whoami to remind yourself who you are")
+                print("You are already logged it. Use kobato user --whoami to remind yourself who you are")
                 return
 
             if not self._parsed_args['login']:
