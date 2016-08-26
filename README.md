@@ -18,3 +18,6 @@ Kobato -- Point.im Command Line Interface
 ## Installation
 
 * `sudo pip install kobato`
+
+## Dive into Point
+
