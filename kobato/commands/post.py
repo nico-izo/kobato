@@ -66,7 +66,8 @@ class KobatoPost(KobatoBasePlugin):
 
     def runEditor(self):
         f = NamedTemporaryFile()
-        f.write(bytearray("*" + ", ".join(self._post['tags']) + "\n", 'utf-8'))
+        if len(self._post['tags']):
+            f.write(bytearray("*" + ", ".join(self._post['tags']) + "\n", 'utf-8'))
         f.write(b"\n")
         if self._post['text']:
             f.write(bytearray(self._post['text'], 'utf-8'))
@@ -112,13 +113,17 @@ class KobatoPost(KobatoBasePlugin):
     def preview(self):
         print("Preview:")
         print("---{0}---".format("PRIVATE POST" if self._post['private'] else ''))
-        print("*" + ", ".join(self._post['tags']))
-        print(self._post['text'])
+        if len(self._post['tags']):
+            print("*" + ", ".join(self._post['tags']))
+        if len(self._post['text']):
+            print(self._post['text'])
+        else:
+            print("WARNING: empty post")
         print("---{0}---".format("PRIVATE POST" if self._post['private'] else ''))
 
     def parse_post(self, filename):
         i = 0
-        post = {'text': ''}
+        post = {'text': '', 'tags': []}
         for line in open(filename, encoding = "UTF-8"):
             if i == 0 and line.startswith('*'):
                 post['tags'] = [s.strip() for s in line[1:].split(",")]
@@ -126,13 +131,15 @@ class KobatoPost(KobatoBasePlugin):
                 post['text'] += line
             i += 1
 
-        post['text'].strip()
+        post['text'] = post['text'].strip()
 
         post['private'] = self._post['private']
         return post
 
     @animated('Pushing into master...')
     def post(self):
+        # TODO: animation and sys.exit cannot coexist
+        # TODO: exit codes
         print("Posting...")
         if not self._post['text']:
             print("ERROR: Post body cannot be empty.")
@@ -144,7 +151,7 @@ class KobatoPost(KobatoBasePlugin):
 
         data = {
             'text': self._post['text'],
-            'tag': self._post['tags']
+            'tag': ", ".join(self._post['tags'])
         }
 
         # holy crap, @arts, what the hell? via #ovyszo
@@ -165,7 +172,7 @@ class KobatoPost(KobatoBasePlugin):
             if 'id' in result:
                 print("Post #{0} successfully created".format(result['id']))
             else:
-                print("Something wrong")
+                print("Something wrong:", result)
         except Exception:
             print("Something TERRIBLY wrong")
 
