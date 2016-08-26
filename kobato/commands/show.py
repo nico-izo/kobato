@@ -41,16 +41,16 @@ class KobatoShow(KobatoBasePlugin):
 
             return
 
-    @animated("Preparing to read vhbne...")
     def post(self, post, replies = False):
         post_ = post[1:] if post.startswith('#') else post
 
-        r = requests.get(
-            "https://point.im/api/post/{0}".format(post_),
-            headers = {
-                'Authorization': Config['login']['token']
-                }
-            )
+        with animated("Preparing to read #{0}".format(post_)):
+            r = requests.get(
+                "https://point.im/api/post/{0}".format(post_),
+                headers = {
+                    'Authorization': Config['login']['token']
+                    }
+                )
 
         try:
             res = r.json()
@@ -60,6 +60,7 @@ class KobatoShow(KobatoBasePlugin):
         except Exception:
             print("JSON parsing failed")
             return
+
         print("")
         print("@{0}: ".format(res['post']['author']['login']))
         print("*" + ", ".join(res['post']['tags']) + "\n")
