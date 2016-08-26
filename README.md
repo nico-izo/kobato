@@ -1,4 +1,4 @@
-Kobato -- Point.im Command Line Interface
+Kobato — Point.im Command Line Interface
 =============
 
 ## Description
@@ -6,7 +6,7 @@ Kobato -- Point.im Command Line Interface
 
 ## Demo
 
-(insert cool gif here)
+![cool gif](http://i.imgur.com/yZjgNy7.gif)
 
 ## Requirements
 
