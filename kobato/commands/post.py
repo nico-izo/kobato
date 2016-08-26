@@ -32,6 +32,7 @@ class KobatoPost(KobatoBasePlugin):
         parser.add_argument('-d', '--delete', help='Specify #post-id to delete')
         parser.add_argument('-p', '--private', default=False, action='store_true', help='Mark post as private')
         parser.add_argument('--list-drafts', default=False, action='store_true', help='Show your drafts')
+        parser.add_argument('--stdin', default=False, action='store_true', help='Only for use together with --yes and --fast')
 
         # TODO: pin post, recommend post, comment, edit post, edit comment
 
@@ -59,6 +60,16 @@ class KobatoPost(KobatoBasePlugin):
             self._post['text'] = self._parsed_args['message']
         self._post['private'] = self._parsed_args['private']
 
+        if self._parsed_args['stdin']:
+            if not self._parsed_args['yes'] or not self._parsed_args['fast']:
+                print("ERROR: you cannot read from stdin and use text editor at the same time.")
+                print("Terminating")
+                sys.exit(1)
+
+            tmp = sys.stdin.read()
+            tmp_post = self.parse_post(tmp, False)
+            self._post['tags'] = list(set(tmp_post['tags']) | set(self._post['tags']))
+            self._post['text'] = tmp_post['text']
 
         self.runEditor()
 
@@ -121,15 +132,19 @@ class KobatoPost(KobatoBasePlugin):
             print("WARNING: empty post")
         print("---{0}---".format("PRIVATE POST" if self._post['private'] else ''))
 
-    def parse_post(self, filename):
+    def parse_post(self, _file, is_file = True):
         i = 0
         post = {'text': '', 'tags': []}
-        for line in open(filename, encoding = "UTF-8"):
+        lines = open(_file, encoding = "UTF-8") if is_file else _file.splitlines(True)
+        for line in lines:
             if i == 0 and line.startswith('*'):
                 post['tags'] = [s.strip() for s in line[1:].split(",")]
             else:
                 post['text'] += line
             i += 1
+
+        if is_file:
+            lines.close()
 
         post['text'] = post['text'].strip()
 
