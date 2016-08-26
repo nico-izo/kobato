@@ -151,7 +151,7 @@ class KobatoPost(KobatoBasePlugin):
 
         data = {
             'text': self._post['text'],
-            'tag': ", ".join(self._post['tags'])
+            'tag': self._post['tags']
         }
 
         # holy crap, @arts, what the hell? via #ovyszo
