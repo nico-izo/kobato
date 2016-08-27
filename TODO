@@ -1,6 +1,7 @@
 * Handle invalid SSL cert
 * Ability to not store password and enter it each time
 * killing app while typing password fucks up the terminal session
+* move to subparsers? (https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers )
 * remove global config
 * posts
 * * read posts
