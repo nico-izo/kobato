@@ -32,7 +32,7 @@ class KobatoPost(KobatoBasePlugin):
         parser.add_argument('-d', '--delete', help='Specify #post-id to delete')
         parser.add_argument('-p', '--private', default=False, action='store_true', help='Mark post as private')
         parser.add_argument('--list-drafts', default=False, action='store_true', help='Show your drafts')
-        parser.add_argument('--stdin', default=False, action='store_true', help='Only for use together with --yes and --fast')
+        parser.add_argument('--stdin', default=False, action='store_true', help='Warning: this option also means --yes and --fast will be enabled')
 
         # TODO: pin post, recommend post, comment, edit post, edit comment
 
@@ -61,10 +61,9 @@ class KobatoPost(KobatoBasePlugin):
         self._post['private'] = self._parsed_args['private']
 
         if self._parsed_args['stdin']:
-            if not self._parsed_args['yes'] or not self._parsed_args['fast']:
-                print("ERROR: you cannot read from stdin and use text editor at the same time.")
-                print("Terminating")
-                sys.exit(1)
+            # --stdin -> --fast + --yes
+            self._parsed_args['fast'] = True
+            self._parsed_args['yes'] = True
 
             tmp = sys.stdin.read()
             tmp_post = self.parse_post(tmp, False)
