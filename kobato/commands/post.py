@@ -1,6 +1,5 @@
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
 from kobato.misc import get_data_dir
-from kobato.config import Config, config_sync, is_logged_in
 
 import subprocess
 import argparse
@@ -163,7 +162,7 @@ class KobatoPost(KobatoBasePlugin):
             print("ERROR: Post body cannot be empty.")
             return
 
-        if not is_logged_in():
+        if not self._config.is_logged_in():
             print("ERROR: You must be logged in")
             return
 
@@ -179,8 +178,8 @@ class KobatoPost(KobatoBasePlugin):
         r = requests.post(
             "https://point.im/api/post",
             headers = {
-                'Authorization': Config['login']['token'],
-                'X-CSRF': Config['login']['csrf_token']
+                'Authorization': self._config['login']['token'],
+                'X-CSRF': self._config['login']['csrf_token']
                 },
             data = data
             )
@@ -200,7 +199,7 @@ class KobatoPost(KobatoBasePlugin):
 
     @animated('Removing kebab...')
     def delete(self, post):
-        if not is_logged_in():
+        if not self._config.is_logged_in():
             print("ERROR: You must be logged in")
             return
 
@@ -208,8 +207,8 @@ class KobatoPost(KobatoBasePlugin):
         r = requests.delete(
             "https://point.im/api/post/{0}".format(post_),
             headers = {
-                'Authorization': Config['login']['token'],
-                'X-CSRF': Config['login']['csrf_token']
+                'Authorization': self._config['login']['token'],
+                'X-CSRF': self._config['login']['csrf_token']
                 }
             )
 

@@ -11,7 +11,8 @@ setup(name='kobato',
       install_requires=[
           'decorating',
           'appdirs',
-          'requests'
+          'requests',
+          'pyyaml'
       ],
       classifiers=[
         'Development Status :: 2 - Pre-Alpha',

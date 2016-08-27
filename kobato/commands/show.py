@@ -1,5 +1,4 @@
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
-from kobato.config import Config, config_sync, config_flush, is_logged_in
 
 import argparse
 import requests
@@ -22,14 +21,14 @@ class KobatoShow(KobatoBasePlugin):
         self._parsed_args = vars(parser.parse_args(self._args))
 
         if self._parsed_args['whoami']:
-            if not is_logged_in():
+            if not self._config.is_logged_in():
                 print("You are NOT logged in. Terminating.")
                 return
 
-            print("Login: {0}".format(Config['login']['login']))
+            print("Login: {0}".format(self._config['login']['login']))
 
             print("Retrieving information from point.im...")
-            self.user_info(Config['login']['login'])
+            self.user_info(self._config['login']['login'])
 
             return
 
@@ -52,7 +51,7 @@ class KobatoShow(KobatoBasePlugin):
             r = requests.get(
                 "https://point.im/api/post/{0}".format(post_),
                 headers = {
-                    'Authorization': Config['login']['token']
+                    'Authorization': self._config['login']['token']
                     }
                 )
 
@@ -92,7 +91,7 @@ class KobatoShow(KobatoBasePlugin):
         r = requests.get(
             "https://point.im/api/user/login/{0}".format(user_),
             headers = {
-                'Authorization': Config['login']['token']
+                'Authorization': self._config['login']['token']
                 }
             )
 

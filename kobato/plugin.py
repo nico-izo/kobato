@@ -1,9 +1,10 @@
 from decorating import animated
 
 class KobatoBasePlugin:
-    def __init__(self, args):
+    def __init__(self, args, config):
         self._args = args
-        
+        self._config = config
+
     def run(self):
         print("Somebody! Please implement me!")
 
@@ -11,13 +12,7 @@ class KobatoDummy(KobatoBasePlugin):
     def run(self):
         print(self._args)
 
-commands = {
-    'dummy': {
-        'aliaces': ('lebabufalo'),
-        'body': KobatoDummy,
-        'description': 'I\'m a dummy. Don\'t mind me.'
-    }
-}
+commands = {}
 
 def kobato_plugin_register(command, _class, aliases = (), description = "TODO"):
     commands[command] = {
@@ -26,10 +21,14 @@ def kobato_plugin_register(command, _class, aliases = (), description = "TODO"):
         'description': description
     }
 
-def kobato_plugin_dispatch(command, args):
+def kobato_plugin_dispatch(command, args, config):
+    aliases = []
+    if 'aliases' in config:
+        aliases = config['aliases']
+
     for key, value in commands.items():
-            process = value['body'](args)
         if key == command or command in value['aliases']:
+            process = value['body'](args, config)
             process.run()
             return
 
