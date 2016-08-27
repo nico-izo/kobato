@@ -15,6 +15,10 @@ class KobatoShow(KobatoBasePlugin):
         parser.add_argument('-u', '--user', help = 'Show user by nickname')
         #parser.add_argument('-t', '--tag', help = 'Show posts by, well, *tag')
         parser.add_argument('-r', '--replies', help = 'Show replies to post', default=False, action='store_true')
+
+        if not len(self._args):
+            self._args = ['--help']
+
         self._parsed_args = vars(parser.parse_args(self._args))
 
         if self._parsed_args['whoami']:
