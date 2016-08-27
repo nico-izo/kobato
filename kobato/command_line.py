@@ -4,7 +4,7 @@ import os
 import sys
 import signal
 
-from kobato.commands import login, post, show, subscribe
+from kobato.commands import login, post, show, subscribe, alias
 from kobato.config import config
 
 from kobato.misc import terminated, usage
