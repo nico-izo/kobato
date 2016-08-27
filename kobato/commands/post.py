@@ -70,9 +70,9 @@ class KobatoPost(KobatoBasePlugin):
             self._post['tags'] = list(set(tmp_post['tags']) | set(self._post['tags']))
             self._post['text'] = tmp_post['text']
 
-        self.runEditor()
+        draft = self.runEditor()
 
-        self.post()
+        self.post(draft)
 
     def runEditor(self):
         f = NamedTemporaryFile()
@@ -153,7 +153,9 @@ class KobatoPost(KobatoBasePlugin):
         return post
 
     @animated('Pushing into master...')
-    def post(self):
+    def post(self, draft):
+        self._post = self.parse_post(draft)
+
         # TODO: animation and sys.exit cannot coexist
         # TODO: exit codes
         print("Posting...")
@@ -187,10 +189,14 @@ class KobatoPost(KobatoBasePlugin):
             result = r.json()
             if 'id' in result:
                 print("Post #{0} successfully created".format(result['id']))
+                print("Removing draft...")
+                os.remove(draft)
             else:
                 print("Something wrong:", result)
+                print("Remember, you still have your draft:", draft)
         except Exception:
             print("Something TERRIBLY wrong")
+            print("Remember, you still have your draft:", draft)
 
     @animated('Removing kebab...')
     def delete(self, post):
