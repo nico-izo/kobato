@@ -1,58 +1,9 @@
 from os import path
 from os import makedirs
-#from configparser import ConfigParser
-import yaml
 from appdirs import user_config_dir
-
 import warnings
+import yaml
 
-#KOBATO_CONFIG = 'kobato.yaml'
-#CONFIG_DIR = user_config_dir("kobato")
-#CONFIG_PATH = path.join(CONFIG_DIR, KOBATO_CONFIG)
-
-#def config_load():
-    #config = ConfigParser()
-    #config.read(CONFIG_PATH)
-
-    #if 'login' not in config:
-        #config = config_create()
-
-    #return config
-
-#def config_create():
-    #config = ConfigParser()
-
-    #config['login'] = {
-        #'login': '',
-        #'password': '',
-        #'is_logged_in': 0
-    #}
-
-    #makedirs(CONFIG_DIR, exist_ok=True)
-    #with open(CONFIG_PATH, 'w') as cfg:
-        #config.write(cfg)
-        #print("Config not found, created one in {}".format(CONFIG_PATH))
-
-    #return config
-
-##Config = config_load()
-
-## what the hell?
-#def config_sync():
-    #global Config
-    #with open(CONFIG_PATH, 'w') as cfg:
-        #Config.write(cfg)
-
-#def config_flush():
-    #global Config
-    #Config['login'] = {
-        #'login': '',
-        #'password': '',
-        #'is_logged_in': 0
-    #}
-
-
-# TODO: remove global config, replace with single one
 class ConfigPrivate:
     _config = {}
     _config_name = 'kobato.yaml'
@@ -85,7 +36,7 @@ class ConfigPrivate:
     def _load_config(self):
         with open(self._config_path, 'r') as cfg:
             self._config = yaml.load(cfg.read())
-            # if you somehow ended as empty config...
+            # if you somehow ended with empty config...
             if self._config is None:
                 self.flush()
                 self.dump()
