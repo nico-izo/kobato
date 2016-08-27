@@ -21,14 +21,18 @@ commands = {
 
 def kobato_plugin_register(command, _class, aliases = (), description = "TODO"):
     commands[command] = {
-        'aliaces': aliases,
+        'aliases': aliases,
         'body': _class,
         'description': description
     }
 
 def kobato_plugin_dispatch(command, args):
     for key, value in commands.items():
-        if key == command or command in value['aliaces']:
             process = value['body'](args)
+        if key == command or command in value['aliases']:
             process.run()
+            return
+
+    print("ERROR: command {0} not found. See kobato help for list of available commands".format(command))
+    sys.exit(1)
 
