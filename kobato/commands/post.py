@@ -81,6 +81,7 @@ class KobatoPost(KobatoBasePlugin):
         f.write(b"\n")
         if self._post['text']:
             f.write(bytearray(self._post['text'], 'utf-8'))
+            f.write(b"\n")
         f.seek(0)
 
         if not self._parsed_args['fast']:
@@ -91,7 +92,7 @@ class KobatoPost(KobatoBasePlugin):
         try:
             shutil.copyfile(f.name, out_draft)
         except OSError:
-            print("Something went wrong, your draft was not saved. Check permissions on {0}".format(get_data_dir))
+            print("Something went wrong, your draft was not saved. Check permissions on {0}".format(get_data_dir()))
             sys.exit(1)
 
         f.close()
@@ -118,13 +119,14 @@ class KobatoPost(KobatoBasePlugin):
             print("Draft-only mode, exiting...")
             sys.exit(0)
 
-        self._post = self.parse_post(out_draft)
+        return out_draft
 
     def preview(self):
         print("Preview:")
         print("---{0}---".format("PRIVATE POST" if self._post['private'] else ''))
         if len(self._post['tags']):
             print("*" + ", ".join(self._post['tags']))
+            print("")
         if len(self._post['text']):
             print(self._post['text'])
         else:
