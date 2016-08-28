@@ -22,7 +22,7 @@ Kobato — Point.im Command Line Interface
 - Manual
     * `git clone https://github.com/nico-izo/kobato.git`
     * `cd kobato`
-    * `virtualenv -p /usr/bin/python2.7 ~/.virtualenvs/kobato`
+    * `virtualenv ~/.virtualenvs/kobato`
     * `source ~/.virtualenvs/kobato/bin/activate`
     * `pip3 install .`
 
