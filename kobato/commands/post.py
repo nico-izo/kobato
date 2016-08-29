@@ -12,6 +12,23 @@ from tempfile import NamedTemporaryFile
 from datetime import datetime
 from decorating import animated
 
+def parse_post(post, private = False):
+    i = 0
+    result = {'text': '', 'tags': [], 'private': private}
+
+    lines = post.splitlines(True)
+
+    for line in lines:
+        if i == 0 and line.startswith('*'):
+            result['tags'] = [s.strip() for s in line[1:].split(",")]
+        else:
+            result['text'] += line
+        i += 1
+
+    result['text'] = result['text'].strip()
+
+    return result
+
 class KobatoPost(KobatoBasePlugin):
 
     _post = {
@@ -55,6 +72,7 @@ class KobatoPost(KobatoBasePlugin):
             self._post['tags'] += [s.strip() for s in args['tags'].split(",")]
         if args['message']:
             self._post['text'] = args['message']
+
         self._post['private'] = args['private']
 
         if args['stdin']:
@@ -63,7 +81,7 @@ class KobatoPost(KobatoBasePlugin):
             args['yes'] = True
 
             tmp = sys.stdin.read()
-            tmp_post = self.parse_post(tmp, False)
+            tmp_post = parse_post(tmp, self._post['private'])
             self._post['tags'] = list(set(tmp_post['tags']) | set(self._post['tags']))
             self._post['text'] = tmp_post['text']
 
@@ -73,6 +91,7 @@ class KobatoPost(KobatoBasePlugin):
 
     def runEditor(self, args):
         f = NamedTemporaryFile()
+
         if len(self._post['tags']):
             f.write(bytearray("*" + ", ".join(self._post['tags']) + "\n", 'utf-8'))
         f.write(b"\n")
@@ -93,7 +112,10 @@ class KobatoPost(KobatoBasePlugin):
             sys.exit(1)
 
         f.close()
-        self._post = self.parse_post(out_draft)
+
+        with open(out_draft, 'r') as fp:
+            self._post = parse_post(fp.read(), self._post['private'])
+
         self.preview()
 
         _input = ''
@@ -108,7 +130,10 @@ class KobatoPost(KobatoBasePlugin):
 
             print("Starting text editor...")
             subprocess.run(["sensible-editor", out_draft])
-            self._post = self.parse_post(out_draft)
+
+            with open(out_draft, 'r') as fp:
+                self._post = parse_post(fp.read(), self._post['private'])
+
             self.preview()
 
         if args['draft']:
@@ -130,28 +155,10 @@ class KobatoPost(KobatoBasePlugin):
             print("WARNING: empty post")
         print("---{0}---".format("PRIVATE POST" if self._post['private'] else ''))
 
-    def parse_post(self, _file, is_file = True):
-        i = 0
-        post = {'text': '', 'tags': []}
-        lines = open(_file, encoding = "UTF-8") if is_file else _file.splitlines(True)
-        for line in lines:
-            if i == 0 and line.startswith('*'):
-                post['tags'] = [s.strip() for s in line[1:].split(",")]
-            else:
-                post['text'] += line
-            i += 1
-
-        if is_file:
-            lines.close()
-
-        post['text'] = post['text'].strip()
-
-        post['private'] = self._post['private']
-        return post
-
     @animated('Pushing into master...')
     def post(self, draft):
-        self._post = self.parse_post(draft)
+        with open(draft, 'r') as fp:
+            self._post = parse_post(fp.read(), self._post['private'])
 
         # TODO: animation and sys.exit cannot coexist
         # TODO: exit codes
