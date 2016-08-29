@@ -9,21 +9,20 @@ import requests
 import sys
 
 class KobatoLogin(KobatoBasePlugin):
-    def run(self):
-        parser = argparse.ArgumentParser()
+    def prepare(self, parser):
         parser.add_argument('-l', '--login', help = 'Optional parameter if you want to only type password')
         parser.add_argument('-r', '--reset', action = 'store_true', default = False, help = 'Exit from Point.im and remove creditentials from config')
-        self._parsed_args = vars(parser.parse_args(self._args))
 
-        if not self._parsed_args['reset']:
+    def run(self, args):
+        if not args['reset']:
             if self._config.is_logged_in():
                 print("You are already logged it. Use kobato user --whoami to remind yourself who you are")
                 return
 
-            if not self._parsed_args['login']:
+            if not args['login']:
                 self.login(input('Username: '), getpass())
             else:
-                self.login(self._parsed_args['login'], getpass())
+                self.login(args['login'], getpass())
         else:
             self.reset()
 
@@ -69,6 +68,4 @@ class KobatoLogin(KobatoBasePlugin):
         print("See ya!")
 
 
-
-
-kobato_plugin_register('login', KobatoLogin, aliases = ('lo', 'l'), description = "Login. Just type your password and use the damn thing.")
+kobato_plugin_register('login', KobatoLogin, aliases = ['lo', 'l'], description = "Login. Just type your password and use the damn thing.")

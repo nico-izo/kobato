@@ -7,20 +7,15 @@ from getpass import getpass
 from decorating import animated
 
 class KobatoShow(KobatoBasePlugin):
-    def run(self):
-        parser = argparse.ArgumentParser()
+    def prepare(self, parser):
         parser.add_argument('-w', '--whoami', default=False, action='store_true')
         parser.add_argument('-p', '--post', help = 'Show post by ID')
         parser.add_argument('-u', '--user', help = 'Show user by nickname')
         #parser.add_argument('-t', '--tag', help = 'Show posts by, well, *tag')
         parser.add_argument('-r', '--replies', help = 'Show replies to post', default=False, action='store_true')
 
-        if not len(self._args):
-            self._args = ['--help']
-
-        self._parsed_args = vars(parser.parse_args(self._args))
-
-        if self._parsed_args['whoami']:
+    def run(self, args):
+        if args['whoami']:
             if not self._config.is_logged_in():
                 print("You are NOT logged in. Terminating.")
                 return
@@ -32,15 +27,15 @@ class KobatoShow(KobatoBasePlugin):
 
             return
 
-        if self._parsed_args['user']:
-            print("Retrieving information about {0}".format(self._parsed_args['user']))
-            self.user_info(self._parsed_args['user'])
+        if args['user']:
+            print("Retrieving information about {0}".format(args['user']))
+            self.user_info(args['user'])
             return
 
-        if self._parsed_args['post']:
-            print("Loading", self._parsed_args['post'])
+        if args['post']:
+            print("Loading", args['post'])
 
-            self.post(self._parsed_args['post'], self._parsed_args['replies'])
+            self.post(args['post'], args['replies'])
 
             return
 
@@ -154,5 +149,6 @@ class KobatoShow(KobatoBasePlugin):
             return "Male"
         else:
             return "Female"
+
 
 kobato_plugin_register('show', KobatoShow, description = "Get information about users, their last posts, about posts, comments and tags")

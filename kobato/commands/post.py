@@ -20,60 +20,58 @@ class KobatoPost(KobatoBasePlugin):
         'private': False
     }
 
-    def run(self):
-        parser = argparse.ArgumentParser()
+    def prepare(self, parser):
         parser.add_argument('-t', '--tag', action='append')
         parser.add_argument('--tags', help='Specify multiple tags at once separated by comma')
-        parser.add_argument('--draft', default=False, action='store_true')
-        parser.add_argument('-y', '--yes', default=False, action='store_true')
+        parser.add_argument('--draft', default=False, action='store_true', help='Save draft and exit')
+        parser.add_argument('-y', '--yes', default=False, action='store_true', help='Don\'t show confirmation')
         parser.add_argument('-f', '--fast', default=False, action='store_true', help='Don\'t start editor. Warning: will exit with error if no message text is presented')
         parser.add_argument('-m', '--message')
         parser.add_argument('-d', '--delete', help='Specify #post-id to delete')
         parser.add_argument('-p', '--private', default=False, action='store_true', help='Mark post as private')
         parser.add_argument('--list-drafts', default=False, action='store_true', help='Show your drafts')
-        parser.add_argument('--stdin', default=False, action='store_true', help='Warning: this option also means --yes and --fast will be enabled')
+        parser.add_argument('--stdin', default=False, action='store_true', help='Warning: this option also means --yes and --fast')
 
+    def run(self, args):
         # TODO: pin post, recommend post, comment, edit post, edit comment
 
-        self._parsed_args = vars(parser.parse_args(self._args))
-
-        if self._parsed_args['delete']:
-            print("Deleting post {0}".format(self._parsed_args['delete']))
-            if not self._parsed_args['yes']:
+        if args['delete']:
+            print("Deleting post {0}".format(args['delete']))
+            if not args['yes']:
                 confirm = input("Are you sure? [y|N]")
                 if confirm.lower() == 'y':
-                    self.delete(self._parsed_args['delete'])
+                    self.delete(args['delete'])
                 else:
                     print("Terminated.")
             else:
-                self.delete(self._parsed_args['delete'])
+                self.delete(args['delete'])
 
             return
 
 
-        if self._parsed_args['tag']:
-            self._post['tags'] += self._parsed_args['tag']
-        if self._parsed_args['tags']:
-            self._post['tags'] += [s.strip() for s in self._parsed_args['tags'].split(",")]
-        if self._parsed_args['message']:
-            self._post['text'] = self._parsed_args['message']
-        self._post['private'] = self._parsed_args['private']
+        if args['tag']:
+            self._post['tags'] += args['tag']
+        if args['tags']:
+            self._post['tags'] += [s.strip() for s in args['tags'].split(",")]
+        if args['message']:
+            self._post['text'] = args['message']
+        self._post['private'] = args['private']
 
-        if self._parsed_args['stdin']:
+        if args['stdin']:
             # --stdin -> --fast + --yes
-            self._parsed_args['fast'] = True
-            self._parsed_args['yes'] = True
+            args['fast'] = True
+            args['yes'] = True
 
             tmp = sys.stdin.read()
             tmp_post = self.parse_post(tmp, False)
             self._post['tags'] = list(set(tmp_post['tags']) | set(self._post['tags']))
             self._post['text'] = tmp_post['text']
 
-        draft = self.runEditor()
+        draft = self.runEditor(args)
 
         self.post(draft)
 
-    def runEditor(self):
+    def runEditor(self, args):
         f = NamedTemporaryFile()
         if len(self._post['tags']):
             f.write(bytearray("*" + ", ".join(self._post['tags']) + "\n", 'utf-8'))
@@ -83,7 +81,7 @@ class KobatoPost(KobatoBasePlugin):
             f.write(b"\n")
         f.seek(0)
 
-        if not self._parsed_args['fast']:
+        if not args['fast']:
             print("Starting text editor...")
             subprocess.run(["sensible-editor", f.name])
 
@@ -100,7 +98,7 @@ class KobatoPost(KobatoBasePlugin):
 
         _input = ''
         # usually it false (when you want previews), otherwise skip this part
-        while not self._parsed_args['yes']:
+        while not args['yes']:
             _input = input('Done? [Y|n|e]').lower()
             if _input == 'y' or _input == '':
                 break
@@ -113,7 +111,7 @@ class KobatoPost(KobatoBasePlugin):
             self._post = self.parse_post(out_draft)
             self.preview()
 
-        if self._parsed_args['draft']:
+        if args['draft']:
             print("\nFinal draft saved as {0}".format(out_draft))
             print("Draft-only mode, exiting...")
             sys.exit(0)
@@ -222,4 +220,4 @@ class KobatoPost(KobatoBasePlugin):
             print("JSON parsing failed")
 
 
-kobato_plugin_register('post', KobatoPost, aliases = ('p', 'draft'), description = "Create and send new posts, manage drafts and write comments")
+kobato_plugin_register('post', KobatoPost, aliases = ['p', 'draft'], description = "Create and send new posts, manage drafts and write comments")

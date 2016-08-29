@@ -1,14 +1,16 @@
-from decorating import animated
 import sys
 import re
-import shlex
 
 class KobatoBasePlugin:
-    def __init__(self, args, config):
-        self._args = args
+    def __init__(self, config):
         self._config = config
 
-    def run(self):
+    def prepare(self, parser):
+        """Register all of the --keys in this method
+        """
+        raise Exception
+
+    def run(self, args):
         print("Somebody! Please implement me!")
 
 class KobatoDummy(KobatoBasePlugin):
@@ -17,7 +19,12 @@ class KobatoDummy(KobatoBasePlugin):
 
 commands = {}
 
-def kobato_plugin_register(command, _class, aliases = (), description = "TODO"):
+def kobato_plugin_register(command, _class, aliases = None, description = "TODO"):
+    global commands
+
+    if aliases is None:
+        aliases = []
+
     commands[command] = {
         'aliases': aliases,
         'body': _class,
@@ -49,32 +56,14 @@ def kobato_format(str_, *args):
 
     return res.replace("{...}", " ".join(map(str, args[i:])))
 
-def kobato_plugin_dispatch(command, args, config):
-    aliases = []
-    if 'aliases' in config:
-        aliases = config['aliases']
-
-    if command in aliases:
-        try:
-            result = kobato_format(aliases[command], *args)
-        except IndexError:
-            print("ERROR: not enough arguments for alias")
-            sys.exit(1)
-
-        print("Alias resolved: kobato", result)
-        print("Executing...")
-        result = shlex.split(result)
-        command = result[0]
-        args = result[1:]
-
+def kobato_subparsers_register(parser, config):
+    global commands
     for key, value in commands.items():
-        if key == command or command in value['aliases']:
-            process = value['body'](args, config)
-            process.run()
-            return
+        subparser = parser.add_parser(key, help = value['description'], aliases = value['aliases'])
+        plugin = value['body'](config)
+        plugin.prepare(subparser)
 
-    print("ERROR: command {0} not found. See kobato help for list of available commands".format(command))
-    sys.exit(1)
+        subparser.set_defaults(func = plugin.run)
 
 if __name__ == '__main__':
     assert kobato_format("{0}", 1) == "1"
