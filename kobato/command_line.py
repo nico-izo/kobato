@@ -9,7 +9,7 @@ import shlex
 from kobato.commands import login, post, show, subscribe, alias
 from kobato.config import ConfigPrivate
 
-from kobato.misc import terminated, usage
+from kobato.misc import terminated
 from kobato.plugin import kobato_subparsers_register, kobato_format
 
 signal.signal(signal.SIGINT, lambda x, y: terminated())
