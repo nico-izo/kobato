@@ -29,4 +29,7 @@ setup(name=kobato.__name__,
       entry_points = {
         'console_scripts': ['kobato=kobato.command_line:main'],
       },
-      zip_safe=False)
+      zip_safe=False,
+      test_suite='nose.collector',
+      tests_require=['nose']
+      )

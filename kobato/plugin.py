@@ -13,10 +13,6 @@ class KobatoBasePlugin:
     def run(self, args):
         print("Somebody! Please implement me!")
 
-class KobatoDummy(KobatoBasePlugin):
-    def run(self):
-        print(self._args)
-
 commands = {}
 
 def kobato_plugin_register(command, _class, aliases = None, description = "TODO"):
@@ -32,7 +28,7 @@ def kobato_plugin_register(command, _class, aliases = None, description = "TODO"
     }
 
 # I will probably deeply regret this piece of code
-def kobato_format(str_, *args):
+def kobato_format(str_, *args, separator = ' '):
     p = re.compile("({\d+}|{...})")
     i = -1
     tail_found = False
@@ -54,7 +50,7 @@ def kobato_format(str_, *args):
     res = "".join(res)
     i += 1
 
-    return res.replace("{...}", " ".join(map(str, args[i:])))
+    return res.replace("{...}", separator.join(map(str, args[i:])))
 
 def kobato_subparsers_register(parser, config):
     global commands
@@ -64,17 +60,3 @@ def kobato_subparsers_register(parser, config):
         plugin.prepare(subparser)
 
         subparser.set_defaults(func = plugin.run)
-
-if __name__ == '__main__':
-    assert kobato_format("{0}", 1) == "1"
-    assert kobato_format("{0} {1}", 1, 2) == "1 2"
-    assert kobato_format("{1} {1}", 1, 2) == "2 2"
-    assert kobato_format("{1} {0}", 1, 2) == "2 1"
-    assert kobato_format("{1}", 1, 2) == "2"
-    assert kobato_format("{0} {1}", 1, 2, 3) == "1 2"
-    assert kobato_format("{0} {1} {...}", 1, 2, 3, 4, 5, 6) == "1 2 3 4 5 6"
-    assert kobato_format("{...} {0} {1}", 1, 2, 3, 4, 5, 6) == "3 4 5 6 1 2"
-    assert kobato_format("{...}", 1, 2, 3) == "1 2 3"
-    assert kobato_format("{3}{2}{1}", 1, 2, 3, 4) == "432"
-    assert kobato_format("text", 1, 2, 3, 4) == "text"
-    assert kobato_format("text") == "text"
