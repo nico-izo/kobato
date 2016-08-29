@@ -11,12 +11,12 @@ import sys
 class KobatoLogin(KobatoBasePlugin):
     def prepare(self, parser):
         parser.add_argument('-l', '--login', help = 'Optional parameter if you want to only type password')
-        parser.add_argument('-r', '--reset', action = 'store_true', default = False, help = 'Exit from Point.im and remove creditentials from config')
+        parser.add_argument('-r', '--reset', action = 'store_true', default = False, help = 'Exit from Point.im and remove credentials from config')
 
     def run(self, args):
         if not args['reset']:
             if self._config.is_logged_in():
-                print("You are already logged it. Use kobato user --whoami to remind yourself who you are")
+                print("You are already logged it. Use kobato show --whoami to remind yourself who you are")
                 return
 
             if not args['login']:
