@@ -62,5 +62,3 @@ class ConfigPrivate:
 
     def is_logged_in(self):
         return 'is_logged_in' in self._config['login'] and self._config['login']['is_logged_in']
-
-config = ConfigPrivate()

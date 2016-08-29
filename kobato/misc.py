@@ -2,14 +2,14 @@ import sys
 import os
 from os import makedirs
 from .plugin import commands
-from .config import config # plz no
+#from .config import config # plz no
 from appdirs import user_data_dir
 
 def terminated():
     print("Plz don't kill me, it's not a nice thing to do with your"
           " imouto ﾟ｡･ﾟヾ(ﾟ｀ｪ´ﾟ)ﾉ｡ﾟ･｡\n")
-    config.dump()
-    os._exit(n)
+    #config.dump()
+    os._exit(1)
 
 def usage():
     columns = 13
