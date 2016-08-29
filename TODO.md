@@ -1,10 +1,10 @@
 * Handle invalid SSL cert
 * Ability to not store password and enter it each time
 * killing app while typing password fucks up the terminal session
-* move to subparsers? (https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers )
-* remove global config
+* ☑ move to subparsers? (https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers )
+* ☑ remove global config
 * posts
-* * read posts
+* * ☑ read posts
 * * recommend posts
 * * pin posts
 * * unpin posts
@@ -17,14 +17,14 @@
 * * * post
 * * * comment
 * comments
-* * basic implementation
+* * ☑ basic implementation
 * * tree impl
 * * recommend comments
 * * delete comments
 * * edit comments
 * users
-* * view userinfo
-* * * view your own info
+* * ☑ view userinfo
+* * * ☑ view your own info
 * sub/unsub to/from
 * * to posts
 * * to users
