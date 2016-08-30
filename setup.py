@@ -1,5 +1,10 @@
 from setuptools import setup
+from codecs import open
+
 import kobato
+
+with open('requirements.txt') as f:
+    requirements = list(map(str.strip, f.readlines()))
 
 setup(name=kobato.__name__,
       version=kobato.__version__,
@@ -10,12 +15,7 @@ setup(name=kobato.__name__,
       author_email=kobato.__email__,
       license='GNU/GPLv3+',
       packages=['kobato', 'kobato.commands'],
-      install_requires=[
-          'decorating',
-          'appdirs',
-          'requests',
-          'pyyaml'
-      ],
+      install_requires=requirements,
       # https://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
         'Development Status :: 2 - Pre-Alpha',
