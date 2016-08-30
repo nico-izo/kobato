@@ -1,9 +1,8 @@
 from setuptools import setup
-from codecs import open
 
 import kobato
 
-with open('requirements.txt') as f:
+with open('requirements.txt', 'r', encoding = 'UTF-8') as f:
     requirements = list(map(str.strip, f.readlines()))
 
 setup(name=kobato.__name__,
