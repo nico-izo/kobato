@@ -36,7 +36,7 @@ def main():
     if sysargs[0] in aliases:
         command = sysargs[0]
         try:
-            result = kobato_format(aliases[command], *sysargs)
+            result = kobato_format(aliases[command], *sysargs[1:])
         except IndexError:
             print("ERROR: not enough arguments for alias")
             sys.exit(1)
