@@ -6,7 +6,7 @@ import signal
 import argparse
 import shlex
 
-from kobato.commands import login, post, show, subscribe, alias
+from kobato.commands import login, post, show, subscribe, alias, feed
 from kobato.config import ConfigPrivate
 
 from kobato.misc import terminated

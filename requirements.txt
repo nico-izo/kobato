@@ -2,3 +2,4 @@ appdirs
 decorating
 pyyaml
 requests
+Jinja2
