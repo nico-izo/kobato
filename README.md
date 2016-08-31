@@ -1,6 +1,8 @@
 Kobato — Point.im Command Line Interface
 =============
 
+[![Build Status](https://travis-ci.org/nico-izo/kobato.svg?branch=master)](https://travis-ci.org/nico-izo/kobato)
+
 ## Description
 `kobato` is a command-line interface for [Point.im](https://point.im/) microblogging platform. It uses official API, so you can do all the things that are there. But for now you can only do only limited set of things.
 
