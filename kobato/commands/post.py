@@ -1,16 +1,14 @@
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
-from kobato.misc import get_data_dir
+from kobato.misc import get_data_dir, kobato_request
 
 import subprocess
 import argparse
 import shutil
 import os
 import sys
-import requests
 
 from tempfile import NamedTemporaryFile
 from datetime import datetime
-from decorating import animated
 
 def parse_post(post, private = False):
     i = 0
@@ -155,21 +153,20 @@ class KobatoPost(KobatoBasePlugin):
             print("WARNING: empty post")
         print("---{0}---".format("PRIVATE POST" if self._post['private'] else ''))
 
-    @animated('Pushing into master...')
     def post(self, draft):
+        print("Reading draft:", draft)
+
         with open(draft, 'r') as fp:
             self._post = parse_post(fp.read(), self._post['private'])
 
-        # TODO: animation and sys.exit cannot coexist
-        # TODO: exit codes
         print("Posting...")
         if not self._post['text']:
             print("ERROR: Post body cannot be empty.")
-            return
+            sys.exit(1)
 
         if not self._config.is_logged_in():
             print("ERROR: You must be logged in")
-            return
+            sys.exit(1)
 
         data = {
             'text': self._post['text'],
@@ -180,51 +177,46 @@ class KobatoPost(KobatoBasePlugin):
         if self._post['private']:
             data['private'] = 'true'
 
-        r = requests.post(
-            "https://point.im/api/post",
-            headers = {
-                'Authorization': self._config['login']['token'],
-                'X-CSRF': self._config['login']['csrf_token']
-                },
-            data = data
-            )
 
-        try:
-            result = r.json()
-            if 'id' in result:
-                print("Post #{0} successfully created".format(result['id']))
-                print("Removing draft...")
-                os.remove(draft)
-            else:
-                print("Something wrong:", result)
-                print("Remember, you still have your draft:", draft)
-        except Exception:
-            print("Something TERRIBLY wrong")
+        result = kobato_request('https://point.im/api/post',
+                                method = 'post',
+                                ssl_check = True,
+                                animated_text = 'Pushing into master...',
+                                headers = {
+                                    'Authorization': self._config['login']['token'],
+                                    'X-CSRF': self._config['login']['csrf_token']
+                                },
+                                data = data)
+
+        if 'id' in result:
+            print("Post #{0} successfully created".format(result['id']))
+            print("Removing draft...")
+            os.remove(draft)
+        else:
+            print("Something wrong:", result)
             print("Remember, you still have your draft:", draft)
 
-    @animated('Removing kebab...')
     def delete(self, post):
         if not self._config.is_logged_in():
             print("ERROR: You must be logged in")
-            return
+            sys.exit(1)
 
         post_ = post[1:] if post.startswith('#') else post
-        r = requests.delete(
-            "https://point.im/api/post/{0}".format(post_),
-            headers = {
-                'Authorization': self._config['login']['token'],
-                'X-CSRF': self._config['login']['csrf_token']
-                }
-            )
 
-        try:
-            res = r.json()
-            if 'error' in res:
-                print("Something went wrong:", res['error'])
-            else:
-                print("Post {0} has been removed successfully".format(post))
-        except Exception:
-            print("JSON parsing failed")
+        result = kobato_request("https://point.im/api/post/{0}".format(post_),
+                                method = 'delete',
+                                ssl_check = True,
+                                animated_text = 'Removing kebab...',
+                                headers = {
+                                    'Authorization': self._config['login']['token'],
+                                    'X-CSRF': self._config['login']['csrf_token']
+                                })
+
+        if 'error' in result:
+            print("Something went wrong:", result['error'])
+        else:
+            print("Post #{0} has been removed successfully".format(post_))
+
 
 
 kobato_plugin_register('post', KobatoPost, aliases = ['p', 'draft'], description = "Create and send new posts, manage drafts and write comments")

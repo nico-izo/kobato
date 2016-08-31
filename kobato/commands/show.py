@@ -1,10 +1,9 @@
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
+from kobato.misc import kobato_request
 
 import argparse
-import requests
 import sys
 from getpass import getpass
-from decorating import animated
 
 class KobatoShow(KobatoBasePlugin):
     def prepare(self, parser):
@@ -42,21 +41,17 @@ class KobatoShow(KobatoBasePlugin):
     def post(self, post, replies = False):
         post_ = post[1:] if post.startswith('#') else post
 
-        with animated("Preparing to read #{0}".format(post_)):
-            r = requests.get(
-                "https://point.im/api/post/{0}".format(post_),
-                headers = {
-                    'Authorization': self._config['login']['token']
-                    }
-                )
+        res = kobato_request("https://point.im/api/post/{0}".format(post_),
+                             method = 'get',
+                             ssl_check = True,
+                             animated_text = "Preparing to read #{0}".format(post_),
+                             headers = {
+                                # TODO: do something about actions with optional auth
+                                'Authorization': self._config['login']['token']
+                             })
 
-        try:
-            res = r.json()
-            if 'error' in res:
-                print("Something went wrong:", res['error'])
-                return
-        except Exception:
-            print("JSON parsing failed")
+        if 'error' in res:
+            print("Something went wrong:", res['error'])
             return
 
         print("")
@@ -79,25 +74,22 @@ class KobatoShow(KobatoBasePlugin):
                 print(" replied to #{0}/{1}".format(c['post_id'], c['to_comment_id']))
             print("")
 
-    @animated("Doin' stuff...")
     def user_info(self, user):
         user_ = user[1:] if user.startswith('@') else user
 
-        r = requests.get(
-            "https://point.im/api/user/login/{0}".format(user_),
-            headers = {
-                'Authorization': self._config['login']['token']
-                }
-            )
+        res = kobato_request("https://point.im/api/user/login/{0}".format(user_),
+                             method = 'get',
+                             ssl_check = True,
+                             headers = {
+                                # TODO: do something about actions with optional auth
+                                'Authorization': self._config['login']['token']
+                             })
 
-        try:
-            res = r.json()
-            if 'error' in res:
-                print("Something went wrong:", res['error'])
-                return
-        except Exception:
-            print("JSON parsing failed")
-            return
+
+        if 'error' in res:
+            print("Something went wrong:", res['error'])
+            sys.exit(1)
+
         f = lambda x : x in res and res[x] is not None and res[x] != ''
 
         print("")
