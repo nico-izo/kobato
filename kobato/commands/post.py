@@ -10,7 +10,8 @@ import sys
 from tempfile import NamedTemporaryFile
 from datetime import datetime
 
-def parse_post(post, private = False):
+
+def parse_post(post, private=False):
     i = 0
     result = {'text': '', 'tags': [], 'private': private}
 
@@ -26,6 +27,7 @@ def parse_post(post, private = False):
     result['text'] = result['text'].strip()
 
     return result
+
 
 class KobatoPost(KobatoBasePlugin):
 
@@ -62,7 +64,6 @@ class KobatoPost(KobatoBasePlugin):
                 self.delete(args['delete'])
 
             return
-
 
         if args['tag']:
             self._post['tags'] += args['tag']
@@ -177,16 +178,15 @@ class KobatoPost(KobatoBasePlugin):
         if self._post['private']:
             data['private'] = 'true'
 
-
         result = kobato_request('https://point.im/api/post',
-                                method = 'post',
-                                ssl_check = True,
-                                animated_text = 'Pushing into master...',
-                                headers = {
+                                method='post',
+                                ssl_check=True,
+                                animated_text='Pushing into master...',
+                                headers={
                                     'Authorization': self._config['login']['token'],
                                     'X-CSRF': self._config['login']['csrf_token']
                                 },
-                                data = data)
+                                data=data)
 
         if 'id' in result:
             print("Post #{0} successfully created".format(result['id']))
@@ -204,10 +204,10 @@ class KobatoPost(KobatoBasePlugin):
         post_ = post[1:] if post.startswith('#') else post
 
         result = kobato_request("https://point.im/api/post/{0}".format(post_),
-                                method = 'delete',
-                                ssl_check = True,
-                                animated_text = 'Removing kebab...',
-                                headers = {
+                                method='delete',
+                                ssl_check=True,
+                                animated_text='Removing kebab...',
+                                headers={
                                     'Authorization': self._config['login']['token'],
                                     'X-CSRF': self._config['login']['csrf_token']
                                 })
@@ -218,5 +218,4 @@ class KobatoPost(KobatoBasePlugin):
             print("Post #{0} has been removed successfully".format(post_))
 
 
-
-kobato_plugin_register('post', KobatoPost, aliases = ['p', 'draft'], description = "Create and send new posts, manage drafts and write comments")
+kobato_plugin_register('post', KobatoPost, aliases=['p', 'draft'], description="Create and send new posts, manage drafts and write comments")

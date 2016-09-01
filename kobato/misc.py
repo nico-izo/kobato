@@ -7,10 +7,12 @@ from appdirs import user_data_dir
 from decorating import animated
 from requests.exceptions import RequestException, SSLError
 
+
 def terminated():
     print("Plz don't kill me, it's not a nice thing to do with your"
           " imouto ﾟ｡･ﾟヾ(ﾟ｀ｪ´ﾟ)ﾉ｡ﾟ･｡\n")
     os._exit(1)
+
 
 def get_data_dir():
     path = os.path.join(user_data_dir('kobato'), 'drafts')
@@ -18,12 +20,14 @@ def get_data_dir():
 
     return path
 
+
 def kobato_request(url,
-                   method = 'get',
-                   result = 'json', # json|text
-                   ssl_check = True,
-                   animated_request = True,
-                   animated_text = 'Doin\' all the things...', **kwargs):
+                   method='get',
+                   result='json',  # json|text
+                   ssl_check=True,
+                   animated_request=True,
+                   animated_text='Doin\' all the things...',
+                   **kwargs):
     named_parameters = {}
 
     if not ssl_check:
@@ -51,7 +55,7 @@ def kobato_request(url,
             print("Exiting...")
             error = True
 
-    if error: # something wrong with animated() and sys.exit
+    if error:  # something wrong with animated() and sys.exit
         sys.exit(127)
 
     if result == 'json':

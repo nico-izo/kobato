@@ -1,6 +1,7 @@
 import sys
 import re
 
+
 class KobatoBasePlugin:
     def __init__(self, config):
         self._config = config
@@ -15,7 +16,8 @@ class KobatoBasePlugin:
 
 commands = {}
 
-def kobato_plugin_register(command, _class, aliases = None, description = "TODO"):
+
+def kobato_plugin_register(command, _class, aliases=None, description="No description"):
     global commands
 
     if aliases is None:
@@ -27,8 +29,9 @@ def kobato_plugin_register(command, _class, aliases = None, description = "TODO"
         'description': description
     }
 
+
 # I will probably deeply regret this piece of code
-def kobato_format(str_, *args, separator = ' '):
+def kobato_format(str_, *args, separator=' '):
     p = re.compile("({\d+}|{...})")
     i = -1
     tail_found = False
@@ -52,11 +55,12 @@ def kobato_format(str_, *args, separator = ' '):
 
     return res.replace("{...}", separator.join(map(str, args[i:])))
 
+
 def kobato_subparsers_register(parser, config):
     global commands
     for key, value in commands.items():
-        subparser = parser.add_parser(key, help = value['description'], aliases = value['aliases'])
+        subparser = parser.add_parser(key, help=value['description'], aliases=value['aliases'])
         plugin = value['body'](config)
         plugin.prepare(subparser)
 
-        subparser.set_defaults(func = plugin.run)
+        subparser.set_defaults(func=plugin.run)

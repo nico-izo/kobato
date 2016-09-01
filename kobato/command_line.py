@@ -14,9 +14,10 @@ from kobato.plugin import kobato_subparsers_register, kobato_format
 
 signal.signal(signal.SIGINT, lambda x, y: terminated())
 
+
 def main():
     parser = argparse.ArgumentParser(description='Kobato — Command line interface for microblogging platform point.im.',
-                                     usage='%(prog)s [-h] COMMAND [-h] [options...]') # because default usage is crap
+                                     usage='%(prog)s [-h] COMMAND [-h] [options...]')  # because default usage is crap
 
     config = ConfigPrivate()
 

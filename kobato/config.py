@@ -4,6 +4,7 @@ from appdirs import user_config_dir
 import warnings
 import yaml
 
+
 class ConfigPrivate:
     _config = {}
     _config_name = 'kobato.yaml'

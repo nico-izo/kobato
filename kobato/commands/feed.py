@@ -5,13 +5,15 @@ from kobato.template import template
 import os
 import sys
 
+
 def render_post(post):
     t = template('post')
     return t.render(**post)
 
+
 class KobatoFeed(KobatoBasePlugin):
     def prepare(self, parser):
-        parser.add_argument('-n', '--page', metavar = ('page'), type=int, help='Show Nth page of feed (warning: limited to 10 pages). Optional parameter')
+        parser.add_argument('-n', '--page', metavar=('page'), type=int, help='Show Nth page of feed (warning: limited to 10 pages). Optional parameter')
         parser.add_argument('-i', '--interactive', action='store_true', default=False, help='Interactive feed (TODO: not implemented)')
 
     def run(self, args):
@@ -24,17 +26,16 @@ class KobatoFeed(KobatoBasePlugin):
                 # TODO
                 self.feed()
 
-    def feed(self, before = None):
+    def feed(self, before=None):
         if not self._config.is_logged_in():
             print("ERROR: You must be logged in")
             sys.exit(1)
 
-
         res = kobato_request('https://point.im/api/recent',
-                             method = 'get',
-                             ssl_check = True,
-                             animated_text = 'Nom-nom...',
-                             headers = {
+                             method='get',
+                             ssl_check=True,
+                             animated_text='Nom-nom...',
+                             headers={
                                 'Authorization': self._config['login']['token']
                              })
 
@@ -53,6 +54,4 @@ class KobatoFeed(KobatoBasePlugin):
             print("\n")
 
 
-
-
-kobato_plugin_register('feed', KobatoFeed, aliases = ['f'], description = "Read your feed. Es ist an important part of microblogging. Don't forget to read your feed.")
+kobato_plugin_register('feed', KobatoFeed, aliases=['f'], description="Read your feed. Es ist an important part of microblogging. Don't forget to read your feed.")

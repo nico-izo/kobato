@@ -8,10 +8,11 @@ from time import sleep
 import requests
 import sys
 
+
 class KobatoLogin(KobatoBasePlugin):
     def prepare(self, parser):
-        parser.add_argument('-l', '--login', help = 'Optional parameter if you want to only type password')
-        parser.add_argument('-r', '--reset', action = 'store_true', default = False, help = 'Exit from Point.im and remove credentials from config')
+        parser.add_argument('-l', '--login', help='Optional parameter if you want to only type password')
+        parser.add_argument('-r', '--reset', action='store_true', default=False, help='Exit from Point.im and remove credentials from config')
 
     def run(self, args):
         if not args['reset']:
@@ -28,7 +29,7 @@ class KobatoLogin(KobatoBasePlugin):
 
     @animated('Doin\' stuff...')
     def login(self, login, password):
-        r = requests.post('http://point.im/api/login', data = {'login': login, 'password': password})
+        r = requests.post('http://point.im/api/login', data={'login': login, 'password': password})
 
         try:
             result = r.json()
@@ -59,7 +60,7 @@ class KobatoLogin(KobatoBasePlugin):
             self._config.dump()
             return
 
-        r = requests.post('https://point.im/api/logout', data = {'csrf_token': self._config['login']['csrf_token']})
+        r = requests.post('https://point.im/api/logout', data={'csrf_token': self._config['login']['csrf_token']})
         # holy fuck! html 403 page in REST API!
         # print(r.text, "\n")
 
@@ -68,4 +69,4 @@ class KobatoLogin(KobatoBasePlugin):
         print("See ya!")
 
 
-kobato_plugin_register('login', KobatoLogin, aliases = ['lo', 'l'], description = "Login. Just type your password and use the damn thing.")
+kobato_plugin_register('login', KobatoLogin, aliases=['lo', 'l'], description="Login. Just type your password and use the damn thing.")

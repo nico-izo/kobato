@@ -5,13 +5,14 @@ import argparse
 import sys
 from getpass import getpass
 
+
 class KobatoShow(KobatoBasePlugin):
     def prepare(self, parser):
         parser.add_argument('-w', '--whoami', default=False, action='store_true')
-        parser.add_argument('-p', '--post', help = 'Show post by ID')
-        parser.add_argument('-u', '--user', help = 'Show user by nickname')
-        #parser.add_argument('-t', '--tag', help = 'Show posts by, well, *tag')
-        parser.add_argument('-r', '--replies', help = 'Show replies to post', default=False, action='store_true')
+        parser.add_argument('-p', '--post', help='Show post by ID')
+        parser.add_argument('-u', '--user', help='Show user by nickname')
+        # parser.add_argument('-t', '--tag', help='Show posts by, well, *tag')
+        parser.add_argument('-r', '--replies', help='Show replies to post', default=False, action='store_true')
 
     def run(self, args):
         if args['whoami']:
@@ -38,14 +39,14 @@ class KobatoShow(KobatoBasePlugin):
 
             return
 
-    def post(self, post, replies = False):
+    def post(self, post, replies=False):
         post_ = post[1:] if post.startswith('#') else post
 
         res = kobato_request("https://point.im/api/post/{0}".format(post_),
-                             method = 'get',
-                             ssl_check = True,
-                             animated_text = "Preparing to read #{0}".format(post_),
-                             headers = {
+                             method='get',
+                             ssl_check=True,
+                             animated_text="Preparing to read #{0}".format(post_),
+                             headers={
                                 # TODO: do something about actions with optional auth
                                 'Authorization': self._config['login']['token']
                              })
@@ -78,19 +79,19 @@ class KobatoShow(KobatoBasePlugin):
         user_ = user[1:] if user.startswith('@') else user
 
         res = kobato_request("https://point.im/api/user/login/{0}".format(user_),
-                             method = 'get',
-                             ssl_check = True,
-                             headers = {
+                             method='get',
+                             ssl_check=True,
+                             headers={
                                 # TODO: do something about actions with optional auth
                                 'Authorization': self._config['login']['token']
                              })
-
 
         if 'error' in res:
             print("Something went wrong:", res['error'])
             sys.exit(1)
 
-        f = lambda x : x in res and res[x] is not None and res[x] != ''
+        def f(x):
+            return x in res and res[x] is not None and res[x] != ''
 
         print("")
         print("@{0}".format(user_) + ":")
@@ -133,7 +134,6 @@ class KobatoShow(KobatoBasePlugin):
         if res['private']:
             print("This blog is protected by whitelist")
 
-
     def gender_to_str(self, gender):
         if gender is None:
             return "Ugnich"
@@ -143,4 +143,4 @@ class KobatoShow(KobatoBasePlugin):
             return "Female"
 
 
-kobato_plugin_register('show', KobatoShow, description = "Get information about users, their last posts, about posts, comments and tags")
+kobato_plugin_register('show', KobatoShow, description="Get information about users, their last posts, about posts, comments and tags")

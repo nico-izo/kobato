@@ -3,13 +3,14 @@ from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
 import argparse
 import sys
 
+
 class KobatoAlias(KobatoBasePlugin):
 
     def prepare(self, parser):
         parser.add_argument('-l', '--list', default=False, action='store_true')
-        parser.add_argument('-c', '--create', nargs=2, help = 'Create new alias', metavar = ('alias_name', 'alias_body'))
-        parser.add_argument('-d', '--delete', help = 'Delete alias by name')
-        parser.add_argument('-f', '--force', help = 'Force action', default=False, action='store_true')
+        parser.add_argument('-c', '--create', nargs=2, help='Create new alias', metavar=('alias_name', 'alias_body'))
+        parser.add_argument('-d', '--delete', help='Delete alias by name')
+        parser.add_argument('-f', '--force', help='Force action', default=False, action='store_true')
 
     def run(self, args):
         if args['list']:
@@ -53,4 +54,4 @@ class KobatoAlias(KobatoBasePlugin):
             print("Alias {0} deleted".format(alias_name))
 
 
-kobato_plugin_register('alias', KobatoAlias, description = "Manage your aliases")
+kobato_plugin_register('alias', KobatoAlias, description="Manage your aliases")

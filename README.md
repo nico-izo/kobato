@@ -49,6 +49,12 @@ Kobato — Point.im Command Line Interface
 - Exit point and remove your login/password from config
     * `kobato login --reset`
 
+## Random
+
+- PEP8
+    * `pip3 install pep8`
+    * `pep8 --ignore E501,E126,E121 ./kobato/`
+
 ## License
 
 GPLv3. All hail Stallman!
