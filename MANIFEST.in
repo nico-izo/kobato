@@ -1,3 +1,4 @@
+reqursive-include kobato/templates
 include LICENSE.txt
 include README.md
 include requirements.txt

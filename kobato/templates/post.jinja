@@ -1,0 +1,20 @@
+{% if rec %}
+Recommended by @{{rec.author.login}}{% if rec.text %} as #{{post.id}}/{{rec.comment_id}}: {{rec.text}}{% endif %}
+
+{% endif %}
+@{{post.author.login}}:
+{% if post.tags|length > 0 and not comment_id %}
+*{% for tag in post.tags -%}
+{% if not loop.first %}, {% endif %}{{tag}}
+{%- endfor %}
+
+{% endif %}
+
+{{post.text}}
+
+{% if not comment_id %}
+#{{post.id}} created at {{post.created}}
+{% else %}
+#{{post.id}}/{{comment_id}} posted at {{post.created}}
+{% endif %}
+Comments: {{post.comments_count}}

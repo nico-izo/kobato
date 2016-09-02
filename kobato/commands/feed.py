@@ -7,6 +7,7 @@ import sys
 
 
 def render_post(post):
+    # print(post, end='\n\n\n\n\n')
     t = template('post')
     return t.render(**post)
 
