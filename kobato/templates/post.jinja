@@ -12,6 +12,12 @@ Recommended by @{{rec.author.login}}{% if rec.text %} as #{{post.id}}/{{rec.comm
 
 {{post.text}}
 
+{% if post.files %}
+{% for f in post.files %}
+{{f}}
+{% endfor %}
+
+{% endif %}
 {% if not comment_id %}
 #{{post.id}} created at {{post.created}}
 {% else %}

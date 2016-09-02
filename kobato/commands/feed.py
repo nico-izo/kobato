@@ -1,15 +1,9 @@
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
 from kobato.misc import kobato_request
-from kobato.template import template
+from kobato.template import render
 
 import os
 import sys
-
-
-def render_post(post):
-    # print(post, end='\n\n\n\n\n')
-    t = template('post')
-    return t.render(**post)
 
 
 class KobatoFeed(KobatoBasePlugin):
@@ -51,7 +45,7 @@ class KobatoFeed(KobatoBasePlugin):
             sys.exit(0)
 
         for p in ps:
-            print(render_post(p))
+            print(render('post', p))
             print("\n")
 
 
