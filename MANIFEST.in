@@ -1,4 +1,4 @@
-reqursive-include kobato/templates
+recursive-include kobato/templates *.jinja
 include LICENSE.txt
 include README.md
 include requirements.txt
