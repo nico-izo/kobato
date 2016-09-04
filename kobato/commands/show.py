@@ -1,5 +1,6 @@
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
 from kobato.misc import kobato_request
+from kobato.template import render
 
 import argparse
 import sys
@@ -55,13 +56,7 @@ class KobatoShow(KobatoBasePlugin):
             print("Something went wrong:", res['error'])
             return
 
-        print("")
-        print("@{0}: ".format(res['post']['author']['login']))
-        print("*" + ", ".join(res['post']['tags']) + "\n")
-        print(res['post']['text'])
-        print("#{0}".format(res['post']['id']) + " created at " + res['post']['created'])
-
-        print("Comments:", res['post']['comments_count'])
+        print(render('post', res))
 
         if replies and res['post']['comments_count']:
             self.render_comments(res['comments'])
