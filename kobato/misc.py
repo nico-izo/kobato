@@ -11,7 +11,7 @@ from requests.exceptions import RequestException, SSLError
 def terminated():
     print("Plz don't kill me, it's not a nice thing to do with your"
           " imouto ﾟ｡･ﾟヾ(ﾟ｀ｪ´ﾟ)ﾉ｡ﾟ･｡\n")
-    os._exit(1)
+    sys.exit(1)
 
 
 def get_data_dir():
