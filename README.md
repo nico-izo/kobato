@@ -55,6 +55,9 @@ Kobato — Point.im Command Line Interface
     * `pip3 install pep8`
     * `pep8 --ignore E501,E126,E121 ./kobato/`
 
+- Coverage
+    * `py.test --cov=kobato kobato/tests/`
+
 ## License
 
 GPLv3. All hail Stallman!
