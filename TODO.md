@@ -45,3 +45,4 @@
 * moar colors!
 * http://misc.flogisoft.com/bash/tip_colors_and_formatting
 * https://argcomplete.readthedocs.io/en/latest/
+* dump to disk blogs/tags
