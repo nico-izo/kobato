@@ -1,3 +1,5 @@
+from kobato.api import Api
+
 import sys
 import re
 
@@ -5,6 +7,7 @@ import re
 class KobatoBasePlugin:
     def __init__(self, config):
         self._config = config
+        self._api = Api(config)
 
     def prepare(self, parser):
         """Register all of the --keys in this method
