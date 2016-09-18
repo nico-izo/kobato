@@ -441,6 +441,13 @@ class Api:
         elif not error:
             output = r.text
 
+        # I'm really, really sorry for this hack. See #ootjce for more information
+        if not error and result == 'json' and 'code' in output and 'message' in output:
+            if output['message'] == 'Post not pinned.':
+                output['error'] = 'PostNotPinnedError'
+            elif output['message'] == 'Post already pinned.':
+                output['error'] = 'PostAlreadyPinnedError'
+
         if not error and result == 'json' and 'error' in output:
             if self._sysexit:
                 print("Something went wront, server returned error:", output['error'])
