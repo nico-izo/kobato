@@ -48,6 +48,8 @@ class KobatoPost(KobatoBasePlugin):
         parser.add_argument('-p', '--private', default=False, action='store_true', help='Mark post as private')
         parser.add_argument('--list-drafts', default=False, action='store_true', help='Show your drafts')
         parser.add_argument('--stdin', default=False, action='store_true', help='Warning: this option also means --yes and --fast')
+        parser.add_argument('--pin', help='Pin #post')
+        parser.add_argument('--unpin', help='Unpin #post')
 
     def run(self, args):
         # TODO: pin post, recommend post, comment, edit post, edit comment
@@ -64,6 +66,12 @@ class KobatoPost(KobatoBasePlugin):
                 self.delete(args['delete'])
 
             return
+
+        if args['pin']:
+            self.pin(args['pin'])
+
+        if args['unpin']:
+            self.unpin(args['unpin'])
 
         if args['tag']:
             self._post['tags'] += args['tag']
@@ -87,6 +95,24 @@ class KobatoPost(KobatoBasePlugin):
         draft = self.runEditor(args)
 
         self.post(draft)
+
+    def pin(self, post):
+        post_ = post[1:] if post.startswith('#') else post
+
+        print("Pinning post #{}".format(post_))
+        res = self._api.pin_post(post_)
+
+        print('Post #{} was successfully pinned'.format(post_))
+        sys.exit(0)
+
+    def unpin(self, post):
+        post_ = post[1:] if post.startswith('#') else post
+
+        print('Unpinning post #{}'.format(post_))
+        res = self._api.unpin_post(post_)
+
+        print('Post #{} was successfully unpinned'.format(post_))
+        sys.exit(0)
 
     def runEditor(self, args):
         f = NamedTemporaryFile()
