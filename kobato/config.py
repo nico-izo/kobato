@@ -22,6 +22,12 @@ class ConfigPrivate:
         elif path.exists(self._config_path) and path.isfile(self._config_path):
             self._load_config()
 
+    def get(self, key, default):
+        if key not in self._config:
+            return default
+
+        return self._config[key]
+
     def __getitem__(self, key):
         return self._config[key]
 
