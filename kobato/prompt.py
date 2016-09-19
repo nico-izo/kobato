@@ -46,7 +46,6 @@ class Prompt:
     def _inline_help(self):
         self._actions.move_to_end('?')
         keys = self._actions.keys()
-        print(keys)
         if not self._case_sensitive:
             keys = map(lambda k: k.upper() if k == self._default else k, keys)
 
