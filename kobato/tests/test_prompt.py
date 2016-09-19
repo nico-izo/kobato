@@ -1,12 +1,12 @@
 import unittest
 import unittest.mock
 
-from kobato.prompt import KobatoPrompt
+from kobato.prompt import Prompt, PromptException
 
 
 class TestPrompt(unittest.TestCase):
     def test_basic_input(self):
-        p = KobatoPrompt(allow_multiple=False, case_sensitive=False)
+        p = Prompt(allow_multiple=False, case_sensitive=False)
         p.add_action('y', help='Yes, submit current post to point.im and remove draft')
         p.add_action('n', help='No, save draft and exit')
         p.add_action('e', help='Run editor to edit post')
@@ -29,7 +29,7 @@ class TestPrompt(unittest.TestCase):
             self.assertEqual(p.input(), ['n'])
 
     def test_multiple_input(self):
-        p = KobatoPrompt(allow_multiple=True, case_sensitive=True)
+        p = Prompt(allow_multiple=True, case_sensitive=True)
         p.add_action('r', help='Recommend without comment', conflicts=['R'])
         p.add_action('R', help='Recommend with comment', conflicts=['r'])
         p.add_action('f', help='Favorite post')
@@ -52,3 +52,33 @@ class TestPrompt(unittest.TestCase):
             res = p.input()
             for c in 'Rfu':
                 self.assertIn(c, res)
+
+    def test_default_option(self):
+        p = Prompt(allow_multiple=False, case_sensitive=False)
+        p.add_action('y', help='Yes')
+        p.add_action('n', help='No', default=True)
+
+        with unittest.mock.patch('builtins.input', lambda: ''):
+            res = p.input()
+            self.assertEqual(res, ['n'])
+
+        with unittest.mock.patch('builtins.input', lambda: 'Y'):
+            res = p.input()
+            self.assertEqual(res, ['y'])
+
+        with self.assertRaises(PromptException):
+            p.add_action('N', help='NOOOO')
+
+        with self.assertRaises(PromptException):
+            p.add_action('y', help='still nooooo')
+
+        with self.assertRaises(PromptException):
+            p.add_action('n', help='yep, still no')
+
+    def test_inline_help(self):
+        p = Prompt(allow_multiple=False, case_sensitive=False, text='Please confirm')
+
+        p.add_action('y')
+        p.add_action('n', default=True)
+
+        self.assertEqual(p._inline_help(), "y|N|?")

@@ -1,31 +1,36 @@
 from collections import OrderedDict
 
 
-class KobatoPromptException(Exception):
+class PromptException(Exception):
     pass
 
 
-class KobatoPrompt:
+class Prompt:
     def __init__(self, allow_multiple=False, case_sensitive=False, text='Choice required'):
         self._allow_multiple = allow_multiple
         self._case_sensitive = case_sensitive
         self._text = text
+        self._default = '?'
 
         self._actions = OrderedDict({
-            'h': {
-                'help': 'Print this help message'
+            '?': {
+                'help': 'Prints this help message'
                 # conflicts with: literally everything else
             }
         })
 
-    def add_action(self, action, help='No help :(', conflicts=None):
-        if action in self._actions:
-            raise KobatoPromptException('Action with same name already exists')
-
+    def add_action(self, action, help='No help :(', conflicts=None, default=False):
         if not self._case_sensitive:
             action = action.lower()
 
-        self._actions[action] = {'help': help}
+        if action in self._actions:
+            raise PromptException('Action with same name already exists')
+
+        if default:
+            self._default = action
+
+        self._actions.update({action: {'help': help}})
+
         if conflicts is not None:
             self._actions[action]['conflicts'] = conflicts
 
@@ -38,9 +43,17 @@ class KobatoPrompt:
 
         return '\n'.join(res)
 
+    def _inline_help(self):
+        self._actions.move_to_end('?')
+        keys = self._actions.keys()
+        print(keys)
+        if not self._case_sensitive:
+            keys = map(lambda k: k.upper() if k == self._default else k, keys)
+
+        return '|'.join(keys)
+
     def input(self):
-        self._actions.move_to_end('h')
-        str_ = '|'.join(self._actions.keys())
+        str_ = self._inline_help()
 
         print("{1} [{0}]: ".format(str_, self._text), end='')
         res = input()
@@ -58,10 +71,14 @@ class KobatoPrompt:
                 res = input()
                 print()
 
-            if 'h' in res or res == '':
+            if '?' in res or (res == '' and self._default == '?'):
                 print(self.help())
                 res = None
                 continue
+
+            if res == '':
+                out.add(self._default)
+                break
 
             for c in res:
                 if c not in self._actions:
