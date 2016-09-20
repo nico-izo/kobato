@@ -111,7 +111,7 @@ class KobatoFeed(KobatoBasePlugin):
                         if not res['has_next']:
                             print("No feed found. Sorry.")
 
-                        res = feed_func(before=ps[i]['post']['uid'])
+                        res = feed_func(before=ps[i]['uid'])
                         ps.extend(res['posts'])
 
                     i += 1
