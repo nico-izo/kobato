@@ -40,11 +40,11 @@ class TestApi(unittest.TestCase):
         with mock.patch('kobato.api.requests.post', dummy_post):
             api.request('/test',
                         method='post',
-                        data={'tag': 'babuf'})
+                        data={'tag': ['babuf']})
 
         self.assertEqual(result['args'], set({'https://point.im/api/test'}))
         self.assertEqual(result['kwargs'], {
-            'data': {'tag': 'babuf'}
+            'data': {'tag': ['babuf']}
         })
 
     def test_fail_on_ssl(self):
@@ -127,7 +127,7 @@ class TestApi(unittest.TestCase):
         self.assertEqual(res['kwargs'], {
             'data': {
                 'text': 'new post, lala',
-                'tags': ['tag1', 'tag2'],
+                'tag': ['tag1', 'tag2'],
                 'private': None
             },
             'headers': {
