@@ -66,7 +66,7 @@ class Api:
                               csrf=True,
                               data={
                                   'text': message,
-                                  'tags': tags,
+                                  'tag': tags,
                                   'private': private
                               })
         return result
@@ -141,7 +141,7 @@ class Api:
                               method='put',
                               data={
                                   'text': message,
-                                  'tags': tags
+                                  'tag': tags
                               })
 
         return result
@@ -283,7 +283,10 @@ class Api:
     def posts_by_tags(self, tags, login="", before=None):
         result = self.request('/tags/{u}'.format(u=login),
                               auth=True,
-                              params={'before': before})
+                              params={
+                                  'before': before,
+                                  'tag': tags
+                              })
 
         return result
 
