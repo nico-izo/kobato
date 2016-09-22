@@ -50,9 +50,14 @@ class Api:
 
         return res == '1'
 
-    def create_post(self, message, tags=None, private=None):
+    def create_post(self, message, tags=None, private=False):
         if tags is not None and len(tags) == 0:
             tags = None
+
+        if not private:
+            private = None
+        else:
+            private = 'true'
 
         result = self.request('/post',
                               method='post',
@@ -127,6 +132,9 @@ class Api:
         return result
 
     def edit_post(self, pid, message, tags=None):
+        if tags is not None and len(tags) == 0:
+            tags = None
+
         result = self.request('/post/{p}'.format(p=pid),
                               auth=True,
                               csrf=True,
