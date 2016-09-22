@@ -1,5 +1,6 @@
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
 from kobato.misc import get_data_dir, kobato_request
+from kobato.api import auth_required
 
 import subprocess
 import argparse
@@ -96,6 +97,7 @@ class KobatoPost(KobatoBasePlugin):
 
         self.post(draft)
 
+    @auth_required
     def pin(self, post):
         post_ = post[1:] if post.startswith('#') else post
 
@@ -105,6 +107,7 @@ class KobatoPost(KobatoBasePlugin):
         print('Post #{} was successfully pinned'.format(post_))
         sys.exit(0)
 
+    @auth_required
     def unpin(self, post):
         post_ = post[1:] if post.startswith('#') else post
 
@@ -180,47 +183,27 @@ class KobatoPost(KobatoBasePlugin):
             print("WARNING: empty post")
         print("---{0}---".format("PRIVATE POST" if self._post['private'] else ''))
 
+    @auth_required
     def post(self, draft):
         print("Reading draft:", draft)
 
         with open(draft, 'r') as fp:
             self._post = parse_post(fp.read(), self._post['private'])
 
+        def remove_draft():
+            print("Removing draft...")
+            os.remove(draft)
+
         print("Posting...")
         if not self._post['text']:
             print("ERROR: Post body cannot be empty.")
+            remove_draft()
             sys.exit(1)
 
-        if not self._config.is_logged_in():
-            print("ERROR: You must be logged in")
-            sys.exit(1)
+        result = self._api.create_post(self._post['text'], self._post['tags'], self._post['private'])
 
-        data = {
-            'text': self._post['text'],
-            'tag': self._post['tags']
-        }
-
-        # holy crap, @arts, what the hell? via #ovyszo
-        if self._post['private']:
-            data['private'] = 'true'
-
-        result = kobato_request('https://point.im/api/post',
-                                method='post',
-                                ssl_check=True,
-                                animated_text='Pushing into master...',
-                                headers={
-                                    'Authorization': self._config['login']['token'],
-                                    'X-CSRF': self._config['login']['csrf_token']
-                                },
-                                data=data)
-
-        if 'id' in result:
-            print("Post #{0} successfully created".format(result['id']))
-            print("Removing draft...")
-            os.remove(draft)
-        else:
-            print("Something wrong:", result)
-            print("Remember, you still have your draft:", draft)
+        print("Post #{0} successfully created".format(result['id']))
+        remove_draft()
 
     def delete(self, post):
         if not self._config.is_logged_in():
