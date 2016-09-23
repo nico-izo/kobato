@@ -46,9 +46,34 @@ class TestApi(unittest.TestCase):
                          auth=True,
                             csrf=True)
 
-    # okay, I have no idea now
-    def test_fail_on_json(self):
-        pass
+    @mock.patch('kobato.api.requests.get')
+    def test_fail_on_json(self, get):
+        api = Api({})
+        dummy = Mock()
+        dummy.json.side_effect = Exception('JSON parsing failed')
+        dummy.text.return_value = 'something'
+
+        get.return_value = dummy
+
+        with self.assertRaises(SystemExit):
+            api.request('/me', auth=True)
+
+        api2 = api.clone(sysexit=False)
+
+        with self.assertRaises(ApiException):
+            api2.request('/me', auth=True)
+
+    @mock.patch('kobato.api.requests.get')
+    def test_text_response(self, get):
+        api = Api({})
+
+        dummy = Mock(text='some text')
+        dummy.json.side_effect = Exception('Should not call this')
+        get.return_value = dummy
+
+        res = api.request('/me', result='text')
+        self.assertEqual(res, 'some text')
+
 
     @mock.patch('kobato.api.requests.get')
     def test_fail_on_errored_response(self, get):
