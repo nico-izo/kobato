@@ -21,7 +21,7 @@ def main():
 
     config = ConfigPrivate()
 
-    subparsers = parser.add_subparsers(help='subcommands help')
+    subparsers = parser.add_subparsers(help='subcommands help', metavar='')
     kobato_subparsers_register(subparsers, config)
 
     aliases = []
