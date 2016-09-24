@@ -457,6 +457,14 @@ class Api:
         elif not error:
             output = r.text
 
+        # okay, I need explain this. SOMETIMES point.im api returns just 'true' instead of {'ok': true}.
+        # IT IS DISGUSTING
+        # @arts, plz
+        if not error and result == 'json':
+            # FIXME TODO: i've never seen ok: false, but what if?
+            if type(output) == type(True):
+                output = {'ok': output}
+
         # I'm really, really sorry for this hack. See #ootjce for more information
         if not error and result == 'json' and 'code' in output and 'message' in output:
             if output['message'] == 'Post not pinned.':
