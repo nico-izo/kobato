@@ -56,7 +56,7 @@ class ConfigPrivate:
         self._config['login'] = {
             'login': '',
             'password': '',
-            'is_logged_in': 0
+            'is_logged_in': False
         }
 
     def _create_config(self):
@@ -65,4 +65,4 @@ class ConfigPrivate:
         self.dump()
 
     def is_logged_in(self):
-        return 'is_logged_in' in self._config['login'] and self._config['login']['is_logged_in']
+        return self._config.get('login', {}).get('is_logged_in', False)

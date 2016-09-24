@@ -46,9 +46,14 @@ class Api:
         return self._config.get("login", {}).get("login", "")
 
     def is_logged_in(self):
-        res = self._config.get("login", {}).get("is_logged_in", None)
+        res = self._config.get("login", {}).get("is_logged_in", False)
 
-        return res == '1'
+        # oh hai legacy
+        if res == '0':
+            self._config['login']['is_logged_in'] = False
+            self._config.dump()
+
+        return res
 
     def create_post(self, message, tags=None, private=False):
         if tags is not None and len(tags) == 0:
