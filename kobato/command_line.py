@@ -12,12 +12,16 @@ from kobato.config import ConfigPrivate
 from kobato.misc import terminated
 from kobato.plugin import kobato_subparsers_register, kobato_format
 
+from kobato import __version__
+
 signal.signal(signal.SIGINT, lambda x, y: terminated())
 
 
 def main():
     parser = argparse.ArgumentParser(description='Kobato — Command line interface for microblogging platform point.im.',
                                      usage='%(prog)s [-h] COMMAND [-h] [options...]')  # because default usage is crap
+
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s {}'.format(__version__))
 
     config = ConfigPrivate()
 
