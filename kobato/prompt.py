@@ -96,3 +96,16 @@ class Prompt:
                 break
 
         return list(out)
+
+
+def confirm(default='yes', text='Can you confirm?'):
+    """
+    Creates basic Prompt object with default action and issues input
+    Use cases: when you need to ask confirmation
+    """
+
+    p = Prompt(text=text)
+    p.add_action('y', help='Yes', conflicts=['n'], default=(default=='yes'))
+    p.add_action('n', help='No', conflicts=['y'], default=(default=='no'))
+
+    return p.input()
