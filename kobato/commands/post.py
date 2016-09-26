@@ -45,7 +45,6 @@ class KobatoPost(KobatoBasePlugin):
         parser.add_argument('-y', '--yes', default=False, action='store_true', help='Don\'t show confirmation')
         parser.add_argument('-f', '--fast', default=False, action='store_true', help='Don\'t start editor. Warning: will exit with error if no message text is presented')
         parser.add_argument('-m', '--message')
-        parser.add_argument('-d', '--delete', help='Specify #post-id to delete')
         parser.add_argument('-p', '--private', default=False, action='store_true', help='Mark post as private')
         parser.add_argument('--list-drafts', default=False, action='store_true', help='Show your drafts')
         parser.add_argument('--stdin', default=False, action='store_true', help='Warning: this option also means --yes and --fast')
@@ -54,19 +53,6 @@ class KobatoPost(KobatoBasePlugin):
 
     def run(self, args):
         # TODO: pin post, recommend post, comment, edit post, edit comment
-
-        if args['delete']:
-            print("Deleting post {0}".format(args['delete']))
-            if not args['yes']:
-                confirm = input("Are you sure? [y|N]")
-                if confirm.lower() == 'y':
-                    self.delete(args['delete'])
-                else:
-                    print("Terminated.")
-            else:
-                self.delete(args['delete'])
-
-            return
 
         if args['pin']:
             self.pin(args['pin'])
@@ -204,27 +190,5 @@ class KobatoPost(KobatoBasePlugin):
 
         print("Post #{0} successfully created".format(result['id']))
         remove_draft()
-
-    def delete(self, post):
-        if not self._config.is_logged_in():
-            print("ERROR: You must be logged in")
-            sys.exit(1)
-
-        post_ = post[1:] if post.startswith('#') else post
-
-        result = kobato_request("https://point.im/api/post/{0}".format(post_),
-                                method='delete',
-                                ssl_check=True,
-                                animated_text='Removing kebab...',
-                                headers={
-                                    'Authorization': self._config['login']['token'],
-                                    'X-CSRF': self._config['login']['csrf_token']
-                                })
-
-        if 'error' in result:
-            print("Something went wrong:", result['error'])
-        else:
-            print("Post #{0} has been removed successfully".format(post_))
-
 
 kobato_plugin_register('post', KobatoPost, aliases=['p', 'draft'], description="Create and send new posts, manage drafts and write comments")
