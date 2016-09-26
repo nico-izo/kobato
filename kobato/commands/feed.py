@@ -1,5 +1,4 @@
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
-from kobato.misc import kobato_request
 from kobato.template import render
 from kobato.prompt import Prompt
 from kobato.api import Api, ApiException, auth_required

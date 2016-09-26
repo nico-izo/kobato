@@ -1,7 +1,6 @@
 import sys
 
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
-from kobato.misc import kobato_request
 from kobato.template import render
 from kobato.api import auth_required
 

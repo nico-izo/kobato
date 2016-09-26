@@ -1,5 +1,5 @@
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
-from kobato.misc import get_data_dir, kobato_request
+from kobato.misc import get_data_dir
 from kobato.api import auth_required
 
 import subprocess
