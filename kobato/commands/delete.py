@@ -42,7 +42,7 @@ class KobatoDelete(KobatoBasePlugin):
                 _wtf(entity_)
             )(self._api)
 
-            print('Deleted')
+            print("Post #{0} has been removed successfully".format(entity_))
 
 
 kobato_plugin_register('delete', KobatoDelete, aliases=['d', 'del'], description="Delete your posts or comments")
