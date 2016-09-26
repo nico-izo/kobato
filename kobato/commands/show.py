@@ -1,10 +1,9 @@
+import sys
+
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
 from kobato.misc import kobato_request
 from kobato.template import render
-
-import argparse
-import sys
-from getpass import getpass
+from kobato.api import auth_required
 
 
 class KobatoShow(KobatoBasePlugin):
@@ -17,19 +16,10 @@ class KobatoShow(KobatoBasePlugin):
 
     def run(self, args):
         if args['whoami']:
-            if not self._config.is_logged_in():
-                print("You are NOT logged in. Terminating.")
-                return
-
-            print("Login: {0}".format(self._config['login']['login']))
-
-            print("Retrieving information from point.im...")
-            self.user_info(self._config['login']['login'])
-
+            self.whoami()
             return
 
         if args['user']:
-            print("Retrieving information about {0}".format(args['user']))
             self.user_info(args['user'])
             return
 
@@ -40,27 +30,23 @@ class KobatoShow(KobatoBasePlugin):
 
             return
 
+    @auth_required
+    def whoami(self):
+        print("Login:", self._api.login())
+
+        self.user_info(self._api.login())
+
     def post(self, post, replies=False):
         post_ = post[1:] if post.startswith('#') else post
 
-        res = kobato_request("https://point.im/api/post/{0}".format(post_),
-                             method='get',
-                             ssl_check=True,
-                             animated_text="Preparing to read #{0}".format(post_),
-                             headers={
-                                # TODO: do something about actions with optional auth
-                                'Authorization': self._config['login']['token']
-                             })
-
-        if 'error' in res:
-            print("Something went wrong:", res['error'])
-            return
+        res = self._api.get_post(post_)
 
         print(render('post', res))
 
         if replies and res['post']['comments_count']:
             self.render_comments(res['comments'])
 
+    # TODO: jinja
     def render_comments(self, comments):
         for c in comments:
             print("@{0}: ".format(c['author']['login']))
@@ -70,20 +56,13 @@ class KobatoShow(KobatoBasePlugin):
                 print(" replied to #{0}/{1}".format(c['post_id'], c['to_comment_id']))
             print("")
 
+    # TODO: jinja
     def user_info(self, user):
         user_ = user[1:] if user.startswith('@') else user
 
-        res = kobato_request("https://point.im/api/user/login/{0}".format(user_),
-                             method='get',
-                             ssl_check=True,
-                             headers={
-                                # TODO: do something about actions with optional auth
-                                'Authorization': self._config['login']['token']
-                             })
+        print("Retrieving information about @{0}".format(user_))
 
-        if 'error' in res:
-            print("Something went wrong:", res['error'])
-            sys.exit(1)
+        res = self._api.user_info(user_)
 
         def f(x):
             return x in res and res[x] is not None and res[x] != ''
