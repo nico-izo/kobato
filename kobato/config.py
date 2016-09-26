@@ -1,25 +1,31 @@
-from os import path
-from os import makedirs
 from appdirs import user_config_dir
+
 import warnings
 import yaml
-
+import os
 
 class ConfigPrivate:
     _config = {}
     _config_name = 'kobato.yaml'
 
-    def __init__(self):
+    def __init__(self, path=None):
         self._config_dir = user_config_dir("kobato")
-        self._config_path = path.join(self._config_dir, self._config_name)
 
-        if not path.exists(self._config_path):
+        if os.environ.get('KOBATO_CONFIG') is not None:
+            self._config_dir = os.environ.get('KOBATO_CONFIG')
+
+        if path is not None:
+            self._config_dir = path
+
+        self._config_path = os.path.join(self._config_dir, self._config_name)
+
+        if not os.path.exists(self._config_path):
             self._create_config()
             print("Config not found, created one in {}".format(self._config_path))
-        elif path.exists(self._config_path) and not path.isfile(self._config_path):
+        elif os.path.exists(self._config_path) and not os.path.isfile(self._config_path):
             warning("kobato.yaml exists and NOT file. Exiting", Warning)
             sys.exit(1)
-        elif path.exists(self._config_path) and path.isfile(self._config_path):
+        elif os.path.exists(self._config_path) and os.path.isfile(self._config_path):
             self._load_config()
 
     def get(self, key, default=None):
@@ -61,7 +67,7 @@ class ConfigPrivate:
 
     def _create_config(self):
         self.flush()
-        makedirs(self._config_dir, exist_ok=True)
+        os.makedirs(self._config_dir, exist_ok=True)
         self.dump()
 
     def is_logged_in(self):
