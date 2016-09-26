@@ -43,11 +43,22 @@ class KobatoPost(KobatoBasePlugin):
         parser.add_argument('--tags', help='Specify multiple tags at once separated by comma')
         parser.add_argument('--draft', default=False, action='store_true', help='Save draft and exit')
         parser.add_argument('-y', '--yes', default=False, action='store_true', help='Don\'t show confirmation')
-        parser.add_argument('-f', '--fast', default=False, action='store_true', help='Don\'t start editor. Warning: will exit with error if no message text is presented')
+        parser.add_argument(
+            '-f',
+            '--fast',
+            default=False,
+            action='store_true',
+            help='Don\'t start editor. Warning: will exit with error if no message text is presented'
+        )
         parser.add_argument('-m', '--message')
         parser.add_argument('-p', '--private', default=False, action='store_true', help='Mark post as private')
         parser.add_argument('--list-drafts', default=False, action='store_true', help='Show your drafts')
-        parser.add_argument('--stdin', default=False, action='store_true', help='Warning: this option also means --yes and --fast')
+        parser.add_argument(
+            '--stdin',
+            default=False,
+            action='store_true',
+            help='Warning: this option also means --yes and --fast'
+        )
         parser.add_argument('--pin', help='Pin #post')
         parser.add_argument('--unpin', help='Unpin #post')
 
