@@ -52,8 +52,6 @@ class KobatoPost(KobatoBasePlugin):
         parser.add_argument('--unpin', help='Unpin #post')
 
     def run(self, args):
-        # TODO: pin post, recommend post, comment, edit post, edit comment
-
         if args['pin']:
             self.pin(args['pin'])
 
