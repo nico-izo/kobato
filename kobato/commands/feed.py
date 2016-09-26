@@ -80,6 +80,8 @@ class KobatoFeed(KobatoBasePlugin):
                 if 'r' in choice:
                     api.rec_post(pid)
                 elif 'R' in choice:
+                    # TODO FIXME
+                    raise Exception('Not implemented')
                     r_text = misc.runEditor(ask_user=True)
                     if r_text == "":
                         print("Empty text field")
@@ -88,6 +90,8 @@ class KobatoFeed(KobatoBasePlugin):
                         api.rec_post(pid, r_text)
 
                 if 'c' in choice:
+                    # TODO FIXME
+                    raise Exception('Not implemented')
                     c_text = misc.runEditor(ask_user=True)
                     if c_text is None:
                         print("Aborted")
