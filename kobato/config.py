@@ -12,10 +12,10 @@ class ConfigPrivate:
         self._config_dir = user_config_dir("kobato")
 
         if os.environ.get('KOBATO_CONFIG') is not None:
-            self._config_dir = os.environ.get('KOBATO_CONFIG')
+            self._config_dir = os.path.expanduser(os.environ.get('KOBATO_CONFIG'))
 
         if path is not None:
-            self._config_dir = path
+            self._config_dir = os.path.expanduser(path)
 
         self._config_path = os.path.join(self._config_dir, self._config_name)
 
