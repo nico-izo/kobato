@@ -26,7 +26,7 @@ setup(name=kobato.__name__,
       ],
       keywords='social blog cli',
       entry_points={
-        'console_scripts': ['kobato=kobato.command_line:main'],
+        'console_scripts': ['kobato=kobato.cli:main'],
       },
       zip_safe=False,
       test_suite='nose.collector',
