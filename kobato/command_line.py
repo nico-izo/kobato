@@ -18,14 +18,13 @@ signal.signal(signal.SIGINT, lambda x, y: terminated())
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Kobato — Command line interface for microblogging platform point.im.',
-                                     usage='%(prog)s [-h] COMMAND [-h] [options...]')  # because default usage is crap
+    parser = argparse.ArgumentParser(description='Kobato — Command line interface for microblogging platform point.im.')
 
     parser.add_argument('-v', '--version', action='version', version='%(prog)s {}'.format(__version__))
 
     config = ConfigPrivate()
 
-    subparsers = parser.add_subparsers(help='subcommands help', metavar='')
+    subparsers = parser.add_subparsers(help='subcommands help', metavar='<command>')
     kobato_subparsers_register(subparsers, config)
 
     aliases = []
