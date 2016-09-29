@@ -6,7 +6,17 @@ import signal
 import argparse
 import shlex
 
-from kobato.commands import login, post, show, subscribe, alias, feed, delete, comment
+from kobato.commands import (
+    login,
+    post,
+    show,
+    subscribe,
+    alias,
+    feed,
+    delete,
+    comment,
+    whitelist
+)
 from kobato.config import ConfigPrivate
 
 from kobato.misc import terminated
