@@ -32,7 +32,6 @@ class KobatoFavorite(KobatoBasePlugin):
             '--editor',
             action='store_true'
         )
-        # TODO: system level ufav -> kobato favorite -u {...} alias
 
     @auth_required
     def run(self, args):
@@ -86,4 +85,10 @@ class KobatoFavorite(KobatoBasePlugin):
     def show(self):
         pass
 
-kobato_plugin_register('favorite', KobatoFavorite, aliases=['f', 'fav'], description="Manage your favorites")
+kobato_plugin_register(
+    'favorite',
+    KobatoFavorite,
+    aliases=['f', 'fav'],
+    description="Manage your favorites",
+    default_aliases={'ufav': 'fav -U'}
+)

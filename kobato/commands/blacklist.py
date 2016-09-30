@@ -11,10 +11,16 @@ class KobatoBlacklist(KobatoBasePlugin):
         parser.add_argument('-b', '--blacklisters', action='store_true', default=False, help='Show users who dared to blacklist your majesty')
         # TODO: edit message (-e?), run editor (eh, another -e? -E?)
         # TODO: maybe allow blacklist multiple at once?
-        # TODO: add system-level alias kobato u/ubl/unblacklist -> kobato blacklist -U {...}
 
     def run(self, args):
         pass
 
 
-kobato_plugin_register('blacklist', KobatoBlacklist, aliases=['bl'], description="Add and remove users to/from your blacklist, view your current blacklist, show users that blacklisted you")
+kobato_plugin_register(
+    'blacklist',
+    KobatoBlacklist,
+    aliases=['bl'],
+    description="Add and remove users to/from your blacklist, "
+                "view your current blacklist, show users that blacklisted you",
+    default_aliases={'ubl': 'bl -U'}
+)
