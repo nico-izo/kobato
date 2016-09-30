@@ -19,8 +19,12 @@ class KobatoBasePlugin:
 
 commands = {}
 
-
-def kobato_plugin_register(command, _class, aliases=None, description="No description"):
+def kobato_plugin_register(
+    command,
+    _class,
+    aliases=None,
+    description="No description",
+    default_aliases=None):
     global commands
 
     if aliases is None:
@@ -29,7 +33,8 @@ def kobato_plugin_register(command, _class, aliases=None, description="No descri
     commands[command] = {
         'aliases': aliases,
         'body': _class,
-        'description': description
+        'description': description,
+        'default_aliases': default_aliases
     }
 
 
@@ -59,7 +64,7 @@ def kobato_format(str_, *args, separator=' '):
     return res.replace("{...}", separator.join(map(str, args[i:])))
 
 
-def kobato_subparsers_register(parser, config):
+def kobato_subparsers_register(parser, config, aliases):
     global commands
     for key, value in commands.items():
         subparser = parser.add_parser(key, help=value['description'], aliases=value['aliases'])
@@ -67,3 +72,6 @@ def kobato_subparsers_register(parser, config):
         plugin.prepare(subparser)
 
         subparser.set_defaults(func=plugin.run)
+
+        if value['default_aliases'] is not None:
+            aliases.update(value['default_aliases'])

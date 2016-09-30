@@ -33,13 +33,11 @@ def main():
     parser.add_argument('-v', '--version', action='version', version='%(prog)s {}'.format(__version__))
 
     config = ConfigPrivate()
+    aliases = config.get('aliases', {})
+    aliases = aliases.copy()
 
     subparsers = parser.add_subparsers(help='subcommands help', metavar='<command>')
-    kobato_subparsers_register(subparsers, config)
-
-    aliases = []
-    if 'aliases' in config:
-        aliases = config['aliases']
+    kobato_subparsers_register(subparsers, config, aliases)
 
     sysargs = sys.argv[1:] if len(sys.argv) > 1 else ['-h']
 
