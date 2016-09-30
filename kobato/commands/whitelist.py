@@ -40,4 +40,10 @@ class KobatoWhitelist(KobatoBasePlugin):
             print("Done")
 
 
-kobato_plugin_register('whitelist', KobatoWhitelist, aliases=['wl'], description="Manage your whitelist")
+kobato_plugin_register(
+    'whitelist',
+    KobatoWhitelist,
+    aliases=['wl'],
+    description="Manage your whitelist",
+    default_aliases={'uwl': 'wl -U {...}'}
+)
