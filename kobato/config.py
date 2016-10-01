@@ -53,7 +53,7 @@ class ConfigPrivate:
 
     def dump(self):
         with open(self._config_path, 'w') as cfg:
-            yaml.dump(self._config, cfg)
+            yaml.dump(self._config, cfg, default_flow_style=False)
 
     def flush(self):
         if self._config is None:
