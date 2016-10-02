@@ -43,10 +43,27 @@ class Api:
         pass
 
     def login(self, login, password):
-        raise Exception('Not Implemented')
+        res = self.request('/login',
+                           method='post',
+                           animated_text='Welcome to Va11halla!',
+                           data={
+                               'login': login,
+                               'password': password
+                           })
 
-    def unlogin():
-        raise Exception('Not Implemented')
+        return res
+
+    def logout(self):
+        res = self.request('/logout',
+                           method='post',
+                           animated_text='Bye-bye',
+                           auth=True,
+                           csrf=True,
+                           data={
+                               'csrf_token': self._csrf_token()
+                           })
+
+        return res
 
     def get_login(self):
         return self._config.get("login", {}).get("login", "")
