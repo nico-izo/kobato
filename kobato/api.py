@@ -42,7 +42,13 @@ class Api:
     def avatar(self, login=None):
         pass
 
-    def login(self):
+    def login(self, login, password):
+        raise Exception('Not Implemented')
+
+    def unlogin():
+        raise Exception('Not Implemented')
+
+    def get_login(self):
         return self._config.get("login", {}).get("login", "")
 
     def is_logged_in(self):
@@ -309,7 +315,7 @@ class Api:
 
     def subscriptions(self, login=None):
         if login is None:
-            login = self.login()
+            login = self.get_login()
 
         result = self.request('/user/{u}/subscriptions'.format(u=login),
                               auth=True)
@@ -318,7 +324,7 @@ class Api:
 
     def subscribers(self, login=None):
         if login is None:
-            login = self.login()
+            login = self.get_login()
 
         result = self.request('/user/{u}/subscribers'.format(u=login),
                               auth=True)

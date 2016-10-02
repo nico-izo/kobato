@@ -21,7 +21,7 @@ class KobatoWhitelist(KobatoBasePlugin):
         if args['show']:
             print('Showing your current whitelist...')
 
-            print("\n{}'s whitelist:".format(self._api.login()))
+            print("\n{}'s whitelist:".format(self._api.get_login()))
             wl = self._api.wl()
             if not len(wl):
                 print("EMPTY")

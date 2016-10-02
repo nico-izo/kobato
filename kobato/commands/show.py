@@ -31,9 +31,10 @@ class KobatoShow(KobatoBasePlugin):
 
     @auth_required
     def whoami(self):
-        print("Login:", self._api.login())
+        print("Login in config:", self._api.get_login())
 
-        self.user_info(self._api.login())
+        # TODO: rewrite this crap
+        self.user_info('', True)
 
     def post(self, post, replies=False):
         post_ = post[1:] if post.startswith('#') else post
@@ -56,12 +57,17 @@ class KobatoShow(KobatoBasePlugin):
             print("")
 
     # TODO: jinja
-    def user_info(self, user):
+    def user_info(self, user, whoami=False):
         user_ = user[1:] if user.startswith('@') else user
 
-        print("Retrieving information about @{0}".format(user_))
-
-        res = self._api.user_info(user_)
+        res = {}
+        if not whoami:
+            print("Retrieving information about @{0}".format(user_))
+            res = self._api.user_info(user_)
+        else:
+            print('Running whoami command...')
+            res = self._api.self_info()
+            user_ = self._api.get_login()
 
         def f(x):
             return x in res and res[x] is not None and res[x] != ''
