@@ -1,11 +1,7 @@
-import argparse
-
 from kobato.plugin import KobatoBasePlugin, kobato_plugin_register
-
+from kobato.api import auth_required
 from getpass import getpass
-from decorating import animated
-from time import sleep
-import requests
+
 import sys
 
 
@@ -27,32 +23,26 @@ class KobatoLogin(KobatoBasePlugin):
         else:
             self.reset()
 
-    @animated('Doin\' stuff...')
     def login(self, login, password):
-        r = requests.post('http://point.im/api/login', data={'login': login, 'password': password})
+        result = self._api.login(login, password)
 
-        try:
-            result = r.json()
-        except Exception as e:
-            print("JSON decoding failed: {0} \n".format(type(e).__name__))
-            print("Exiting...\n")
-            return
+        if any([x not in result for x in ('token', 'csrf_token')]):
+            print('Something wrong with server response. Config not updated. Please report this.')
+            sys.exit(120)
 
-        if 'error' in result:
-            print("Authorization failed. Config not updated \n")
-            return
 
-        elif 'token' in result and 'csrf_token' in result:
-            self._config['login']['token'] = result['token']
-            self._config['login']['csrf_token'] = result['csrf_token']
-            self._config['login']['login'] = login
-            self._config['login']['password'] = password
-            self._config['login']['is_logged_in'] = '1'
-            self._config.dump()
-            print("Successful authorization. Config file updated")
-            print("Welcome, @{0}!".format(login))
+        # TODO: this is crap as hell
+        self._config['login'] = {}
+        self._config['login']['token'] = result['token']
+        self._config['login']['csrf_token'] = result['csrf_token']
+        self._config['login']['login'] = login
+        self._config['login']['password'] = password
+        self._config['login']['is_logged_in'] = True
+        self._config.dump()
+        print("Successful authorization. Config file updated")
+        print("Welcome, @{0}!".format(login))
 
-    @animated('Bye-bye...')
+    @auth_required
     def reset(self):
         if 'csrf_token' not in self._config['login']:
             print("CSRF token not found, flushing config...")
@@ -60,9 +50,7 @@ class KobatoLogin(KobatoBasePlugin):
             self._config.dump()
             return
 
-        r = requests.post('https://point.im/api/logout', data={'csrf_token': self._config['login']['csrf_token']})
-        # holy fuck! html 403 page in REST API!
-        # print(r.text, "\n")
+        res = self._api.logout()
 
         self._config.flush()
         self._config.dump()
