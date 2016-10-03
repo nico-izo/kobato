@@ -16,16 +16,17 @@ def parse_post(post, private=False):
     i = 0
     result = {'text': '', 'tags': [], 'private': private}
 
-    lines = post.splitlines(True)
+    lines = post.strip().splitlines(True)
 
+    array_to_join = []
     for line in lines:
         if i == 0 and line.startswith('*'):
             result['tags'] = [s.strip() for s in line[1:].split(",")]
         else:
-            result['text'] += line
+            array_to_join.append(line)
         i += 1
 
-    result['text'] = result['text'].strip()
+    result['text'] = "".join(array_to_join).strip()
 
     return result
 
