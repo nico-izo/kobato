@@ -53,15 +53,14 @@ class KobatoPost(KobatoBasePlugin):
         )
         parser.add_argument('-m', '--message')
         parser.add_argument('-p', '--private', default=False, action='store_true', help='Mark post as private')
-        parser.add_argument('--list-drafts', default=False, action='store_true', help='Show your drafts')
         parser.add_argument(
             '--stdin',
             default=False,
             action='store_true',
-            help='Warning: this option also means --yes and --fast'
+            help='Implies --yes and --fast'
         )
-        parser.add_argument('--pin', help='Pin #post')
-        parser.add_argument('--unpin', help='Unpin #post')
+        parser.add_argument('--pin', help='Pin #post or post')
+        parser.add_argument('--unpin', help='Unpin #post or post')
 
     def run(self, args):
         if args['pin']:
