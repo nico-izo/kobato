@@ -200,4 +200,14 @@ class KobatoPost(KobatoBasePlugin):
         print("Post #{0} successfully created".format(result['id']))
         remove_draft()
 
-kobato_plugin_register('post', KobatoPost, aliases=['p', 'draft'], description="Create and send new posts, manage drafts and write comments")
+
+kobato_plugin_register(
+    'post',
+    KobatoPost,
+    aliases=['p'],
+    description='Create and send, pin and unpin your posts',
+    default_aliases={
+        'pin': 'post --pin {0}',
+        'unpin': 'post --unpin {0}'
+    }
+)
