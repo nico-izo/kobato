@@ -1,7 +1,7 @@
 import unittest
 import unittest.mock
 
-from kobato.prompt import Prompt, PromptException
+from kobato.prompt import Prompt, PromptException, confirm
 
 
 class TestPrompt(unittest.TestCase):
@@ -82,3 +82,32 @@ class TestPrompt(unittest.TestCase):
         p.add_action('n', default=True)
 
         self.assertEqual(p._inline_help(), "y|N|?")
+
+    @unittest.mock.patch('builtins.input')
+    def test_confirm_action(self, input_):
+        input_.return_value = ''
+        self.assertEqual(confirm(default='yes'), ['y'])
+
+        input_.return_value = 'n'
+
+        self.assertEqual(confirm(default='yes'), ['n'])
+
+        input_.return_value = 'y'
+
+        self.assertEqual(confirm(), ['y'])
+
+        input_.return_value = 'n'
+
+        self.assertEqual(confirm(), ['n'])
+
+        input_.return_value = 'y'
+
+        self.assertEqual(confirm(additional={'e': 'Edit'}), ['y'])
+
+        input_.return_value = 'e'
+
+        self.assertEqual(confirm(additional={'e': 'Edit'}), ['e'])
+
+        input_.return_value = ''
+
+        self.assertEqual(confirm(additional={'e': 'Edit'}, default='e'), ['e'])
