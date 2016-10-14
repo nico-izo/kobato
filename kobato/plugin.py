@@ -10,12 +10,13 @@ class KobatoBasePlugin:
         self._api = Api(config)
 
     def prepare(self, parser):
-        """Register all of the --keys in this method
         """
-        raise Exception
+        Register all of the --keys in this method
+        """
+        raise NotImplementedError
 
     def run(self, args):
-        print("Somebody! Please implement me!")
+        raise NotImplementedError
 
 commands = {}
 
