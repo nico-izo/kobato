@@ -38,7 +38,7 @@ class TextEditor:
         if self._file is None:
             raise TextEditorException('You must run() editor only in `with` block')
 
-        subprocess.run([self._editor, self._file.name])
+        subprocess.call([self._editor, self._file.name])
 
         self._file.seek(0)
         self._editable.reload(self._file.read())

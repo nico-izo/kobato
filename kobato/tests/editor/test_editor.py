@@ -13,9 +13,9 @@ class TestTextEditor(unittest.TestCase):
         # yeah, I know, that's pretty stupid test
         # but at same time I don't know how to test this crap without mocks
         # so I cannot be sure
-        self.assertTrue(hasattr(subprocess, 'run'))
+        self.assertTrue(hasattr(subprocess, 'call'))
 
-    @mock.patch('subprocess.run')
+    @mock.patch('subprocess.call')
     def test_basic(self, s):
         text = SimpleText('foo bar')
         textedit = TextEditor(text)
@@ -30,7 +30,7 @@ class TestTextEditor(unittest.TestCase):
 
             self.assertEqual(result.text, 'foo bar baz')
 
-    @mock.patch('subprocess.run')
+    @mock.patch('subprocess.call')
     def test_multirun(self, s):
         text = SimpleText('foo bar')
 
@@ -47,6 +47,6 @@ class TestTextEditor(unittest.TestCase):
         self.assertEqual(textedit.result().text, 'foo bar')
 
     # TODO: test the rest of code
-    @mock.patch('subprocess.run')
+    @mock.patch('subprocess.call')
     def test_edit_specific_file(self, s):
         pass
