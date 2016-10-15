@@ -1,0 +1,7 @@
+---{% if post.private %}PRIVATE POST{% endif %}---
+{% if not post.text %}
+WARNING: empty post
+{% else %}
+{{ post.encode() }}
+{% endif %}
+---{% if post.private %}PRIVATE POST{% endif %}---
