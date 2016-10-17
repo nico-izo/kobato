@@ -315,6 +315,16 @@ class Api:
 
         return result
 
+    def favorites(self, before=None):
+        result = self.request('/bookmarks',
+                              method='get',
+                              auth=True,
+                              params={
+                                  'before': before
+                              })
+
+        return result
+
     def user_tags(self, login):
         result = self.request('/tags/{u}'.format(u=login),
                               auth=True)
