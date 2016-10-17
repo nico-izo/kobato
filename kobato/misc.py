@@ -3,7 +3,6 @@ import os
 
 from os import makedirs
 from appdirs import user_data_dir
-from decorating import animated
 
 
 def terminated():

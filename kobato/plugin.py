@@ -1,6 +1,5 @@
 from kobato.api import Api
 
-import sys
 import re
 
 
