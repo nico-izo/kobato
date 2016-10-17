@@ -447,6 +447,13 @@ class Api:
 
         return result
 
+    def blers(self):
+        result = self.request('/user/blers',
+                              method='get',
+                              auth=True)
+
+        return result
+
     def request(self,
                 url,
                 method='get',  # get|post|put|delete|...
