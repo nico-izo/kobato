@@ -1,6 +1,7 @@
 import unittest
 import subprocess
 import tempfile
+import os
 from unittest import mock
 
 from kobato.editor.texteditor import TextEditor, TextEditorException
@@ -49,4 +50,32 @@ class TestTextEditor(unittest.TestCase):
     # TODO: test the rest of code
     @mock.patch('subprocess.call')
     def test_edit_specific_file(self, s):
-        pass
+        text = SimpleText('foo')
+
+        with tempfile.NamedTemporaryFile(mode='w+t') as tmp:
+
+            textedit = TextEditor(text, filename=tmp.name)
+
+            with textedit as t:
+
+                t._file.seek(0, 2)
+                t._file.write(' bar')
+                t._file.seek(0)
+                t._file.flush()
+                os.fsync(t._file.fileno())
+                t.run()
+
+                self.assertEqual(t.result().text, 'foo bar')
+
+            self.assertEqual(t._file, None)
+
+            tmp.seek(0)
+            self.assertEqual(tmp.read(), 'foo bar')
+
+            tmp.close()
+
+        with tempfile.TemporaryDirectory() as tempdir:
+            textedit.save(tempdir, 't.txt')
+
+            with open(os.path.join(tempdir, 't.txt')) as fp:
+                self.assertEqual(fp.read(), 'foo bar')

@@ -63,10 +63,10 @@ class TextEditor:
             self._file = open(filename, mode='w+t', encoding='utf8')
         else:
             self._file = tempfile.NamedTemporaryFile(mode='w+t', encoding='utf8')
-            self._file.write(self._editable.encode())
-            self._file.flush()
-            os.fsync(self._file.fileno())
-            self._file.seek(0)
+        self._file.write(self._editable.encode())
+        self._file.flush()
+        os.fsync(self._file.fileno())
+        self._file.seek(0)
 
         return self
 
