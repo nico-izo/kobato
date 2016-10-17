@@ -195,6 +195,17 @@ class Api:
 
         return result
 
+    def edit_comment(self, pid, comment_id, message):
+        result = self.request('/post/{p}/{cid}'.format(p=pid, cid=comment_id),
+                              method='patch',
+                              auth=True,
+                              csrf=True,
+                              data={
+                                  'text': message
+                              })
+
+        return result
+
     def delete_comment(self, pid, comment_id):
         result = self.request('/post/{p}/{i}'.format(p=pid, i=comment_id),
                               method='delete',
