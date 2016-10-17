@@ -288,6 +288,8 @@ class Api:
                               csrf=True,
                               data={'text': message})
 
+        return result
+
     def unfav_post(self, pid):
         result = self.request('/post/{p}/b'.format(p=pid),
                               method='delete',
