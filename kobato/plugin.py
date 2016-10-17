@@ -42,7 +42,6 @@ def kobato_plugin_register(
 def kobato_format(str_, *args, separator=' '):
     p = re.compile("({\d+}|{...})")
     i = -1
-    tail_found = False
     prev = 0
     res = []
     res.append(str_)
