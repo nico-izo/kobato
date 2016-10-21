@@ -17,6 +17,8 @@ from kobato.commands import (
     comment,
     whitelist
 )
+import kobato.commands.config
+
 from kobato.config import ConfigPrivate
 
 from kobato.misc import terminated
